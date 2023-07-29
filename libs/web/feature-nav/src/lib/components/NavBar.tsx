@@ -11,6 +11,7 @@ export const NavBar = () => {
   const buttons: NavButtonProps[] = [
     {
       label: 'Home',
+      disabled: !isAuthenticated || location.pathname === '/',
       to: '/',
     },
   ];

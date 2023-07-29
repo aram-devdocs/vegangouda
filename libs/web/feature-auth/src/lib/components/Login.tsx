@@ -62,7 +62,7 @@ export const Login = () => {
       >
         Login with{' '}
         <AnimatedTypography
-          animation="smooth"
+          animation="slow"
           variant="subtitle2"
           text={isEmailLogin ? 'mobile' : 'email'}
         />

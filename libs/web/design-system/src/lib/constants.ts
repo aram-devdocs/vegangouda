@@ -34,7 +34,7 @@ export const animationProps = {
   },
 
   slow: {
-    animation: 'slow 1s ease-in-out',
+    animation: 'slow 2s ease-in-out',
     '@keyframes slow': {
       '0%': {
         opacity: 0,
