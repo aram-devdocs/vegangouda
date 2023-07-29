@@ -15,8 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@myorg/is-even": ["packages/is-even/src/index.ts"],
-      "@vegangouda/design-system": ["libs/web/design-system/src/index.ts"]
+      "@vegangouda/design-system": ["libs/web/design-system/src/index.ts"],
+      "@vegangouda/context": ["libs/web/context/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

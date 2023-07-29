@@ -59,7 +59,7 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             height: 30,
           }
     const outline = isSelected
-      ? `2px solid ${theme.palette.on.background.accent}`
+      ? `2px solid ${theme.palette.common.white}`
       : isOutlined
       ? `1.5px solid ${theme.palette.common.white}`
       : 'none'

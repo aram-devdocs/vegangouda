@@ -20,7 +20,6 @@ const trailingIcon = {
       <InputAdornment position="end">
         <Button
           label="toggle"
-          variant="ghost"
           onMouseDown={e => e.preventDefault()}
           corners="rounded"
           icon={<ErrorSolidIcon />}
@@ -37,7 +36,6 @@ const trailingIconDisabled = {
         <Button
           disabled
           label="toggle"
-          variant="ghost"
           onMouseDown={e => e.preventDefault()}
           corners="rounded"
           icon={<ErrorSolidIcon />}

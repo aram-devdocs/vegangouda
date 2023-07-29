@@ -61,18 +61,18 @@ export const Error: Story = {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>Ghost</TableCell>
+          <TableCell>contained</TableCell>
           <TableCell>
-            <Button {...args} variant="ghost" size="small" />
+            <Button {...args} variant="contained" size="small" />
           </TableCell>
           <TableCell>
-            <Button {...args} variant="ghost" size="small" startIcon={<PlusIcon />} />
+            <Button {...args} variant="contained" size="small" startIcon={<PlusIcon />} />
           </TableCell>
           <TableCell>
-            <Button {...args} variant="ghost" size="small" endIcon={<PlusIcon />} />
+            <Button {...args} variant="contained" size="small" endIcon={<PlusIcon />} />
           </TableCell>
           <TableCell>
-            <Button {...args} variant="ghost" size="small" icon={<PlusIcon />} />
+            <Button {...args} variant="contained" size="small" icon={<PlusIcon />} />
           </TableCell>
         </TableRow>
         <TableRow>

@@ -1,47 +1,50 @@
-import { ExtendButtonBase, keyframes } from '@mui/material'
-import { LoadingButton } from '@mui/lab'
-import { merge } from 'lodash'
-import { ButtonTypeMap as MuiButtonTypeMap } from '@mui/material/Button'
-import { forwardRef } from 'react'
-import { mergeSx } from '../../themes/utils/mergeSx'
-import { Tooltip, TooltipProps } from '../Tooltip/Tooltip'
-import { LoadingIcon } from '../../icons'
-import { Box } from '../Box/Box'
-import { IUnderlying, OnUnderlying } from '../../themes/types'
+import { ExtendButtonBase, keyframes } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { merge } from 'lodash';
+import { ButtonTypeMap as MuiButtonTypeMap } from '@mui/material';
+import { forwardRef } from 'react';
+import { mergeSx } from '../../themes/utils/mergeSx';
+import { Tooltip, TooltipProps } from '../Tooltip/Tooltip';
+import { LoadingIcon } from '../../icons';
+import { Box } from '../Box/Box';
+import { IUnderlying, OnUnderlying } from '../../themes/types';
 
 export type ButtonTypeMap = MuiButtonTypeMap<{
   /** text to display on button, if it's using icon it will be use to aria-label */
-  label: string
+  label: string;
   /**
    * @default 'square'
    */
-  corners?: 'rounded' | 'square'
-  icon?: React.ReactNode
+  corners?: 'rounded' | 'square';
+  icon?: React.ReactNode;
   /**
    * @default 'false'
    */
-  loading?: boolean
+  loading?: boolean;
   /**
    * @default ''
    */
-  tooltip?: string
+  tooltip?: string;
   /**
    * @default 'top'
    */
-  tooltipPlacement?: TooltipProps['placement']
+  tooltipPlacement?: TooltipProps['placement'];
   /**
    * @default 'background'
    */
-  on?: keyof IUnderlying
+  on?: keyof IUnderlying;
   /**
    * @default true
    */
-  wrapText?: boolean
-}>
+  wrapText?: boolean;
+}>;
 
-export type ButtonProps = Omit<ButtonTypeMap['props'], 'children'>
+export type ButtonProps = Omit<ButtonTypeMap['props'], 'children'>;
 
-export const Button: ExtendButtonBase<ButtonTypeMap> = forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button: ExtendButtonBase<ButtonTypeMap> = forwardRef<
+  HTMLButtonElement,
+  ButtonProps
+>(
   (
     {
       // export const Button: React.FunctionComponent<ButtonProps> = ({
@@ -57,7 +60,7 @@ export const Button: ExtendButtonBase<ButtonTypeMap> = forwardRef<HTMLButtonElem
       wrapText = true,
       ...restProps
     },
-    ref,
+    ref
   ) => {
     const loadingIcon = keyframes`
     0% {
@@ -66,8 +69,8 @@ export const Button: ExtendButtonBase<ButtonTypeMap> = forwardRef<HTMLButtonElem
     100% {
       transform: rotate(360deg);
     }
-  `
-    const isOutlined = restProps.variant === 'outlined'
+  `;
+    const isOutlined = restProps.variant === 'outlined';
 
     const backgroundColorHover =
       on === 'surface' || on === 'background'
@@ -76,7 +79,7 @@ export const Button: ExtendButtonBase<ButtonTypeMap> = forwardRef<HTMLButtonElem
         ? 'state.button.hovered'
         : restProps.variant !== 'contained'
         ? 'state.main.hovered'
-        : 'state.button.hovered'
+        : 'state.button.hovered';
 
     let styles = {
       borderRadius: '0',
@@ -85,7 +88,7 @@ export const Button: ExtendButtonBase<ButtonTypeMap> = forwardRef<HTMLButtonElem
           backgroundColor: backgroundColorHover,
         },
       },
-    }
+    };
 
     if (restProps.variant !== 'contained' && !restProps.color) {
       styles = merge(styles, {
@@ -95,7 +98,7 @@ export const Button: ExtendButtonBase<ButtonTypeMap> = forwardRef<HTMLButtonElem
           backgroundColor: 'transparent',
           borderColor: `${OnUnderlying[on]}.highEmphasis`,
         },
-      })
+      });
     }
 
     if (restProps.variant !== 'contained' && restProps.disabled) {
@@ -109,7 +112,7 @@ export const Button: ExtendButtonBase<ButtonTypeMap> = forwardRef<HTMLButtonElem
           color: `${OnUnderlying[on]}.disabled`,
           borderColor: `${OnUnderlying[on]}.disabled`,
         },
-      })
+      });
     }
 
     if (loading) {
@@ -117,48 +120,13 @@ export const Button: ExtendButtonBase<ButtonTypeMap> = forwardRef<HTMLButtonElem
         '&.MuiLoadingButton-root.Mui-disabled': {
           color: 'transparent',
         },
-      })
+      });
     }
 
     if (corners === 'rounded') {
       styles = merge(styles, {
         borderRadius: '60px',
-      })
-    }
-
-    if (restProps.variant !== 'ghost') {
-      if (icon && size === 'medium') {
-        styles = merge(styles, {
-          padding: isOutlined ? '17px' : '18px',
-        })
-      } else if (icon && size === 'small') {
-        styles = merge(styles, {
-          padding: isOutlined ? '9px' : '10px',
-        })
-      }
-      if (restProps.startIcon && size === 'medium') {
-        styles = merge(styles, {
-          paddingLeft: isOutlined ? '25px' : '26px',
-          paddingRight: isOutlined ? '31px' : '32px',
-        })
-      } else if (restProps.startIcon && size === 'small') {
-        styles = merge(styles, {
-          paddingLeft: isOutlined ? '9px' : '10px',
-          paddingRight: isOutlined ? '17px' : '18px',
-        })
-      }
-
-      if (restProps.endIcon && size === 'medium') {
-        styles = merge(styles, {
-          paddingLeft: isOutlined ? '31px' : '32px',
-          paddingRight: isOutlined ? '25px' : '26px',
-        })
-      } else if (restProps.endIcon && size === 'small') {
-        styles = merge(styles, {
-          paddingLeft: isOutlined ? '17px' : '18px',
-          paddingRight: isOutlined ? '9px' : '10px',
-        })
-      }
+      });
     }
 
     if (size === 'medium') {
@@ -171,7 +139,7 @@ export const Button: ExtendButtonBase<ButtonTypeMap> = forwardRef<HTMLButtonElem
           marginLeft: 0,
           marginRight: '6px',
         },
-      })
+      });
     } else if (size === 'small') {
       styles = merge(styles, {
         '.MuiButton-endIcon': {
@@ -182,27 +150,19 @@ export const Button: ExtendButtonBase<ButtonTypeMap> = forwardRef<HTMLButtonElem
           marginLeft: 0,
           marginRight: '4px',
         },
-      })
-    }
-
-    if (restProps.variant === 'ghost') {
-      styles = merge(styles, {
-        '.MuiButton-startIcon': {
-          marginRight: '4px',
-        },
-        '.MuiButton-endIcon': {
-          marginLeft: '4px',
-        },
-      })
+      });
     }
 
     if (!wrapText) {
       styles = merge(styles, {
         whiteSpace: 'nowrap',
-      })
+      });
     }
     return (
-      <Tooltip title={restProps.disabled ? '' : tooltip} placement={tooltipPlacement}>
+      <Tooltip
+        title={restProps.disabled ? '' : tooltip}
+        placement={tooltipPlacement}
+      >
         <LoadingButton
           aria-label={label}
           loading={loading}
@@ -223,6 +183,6 @@ export const Button: ExtendButtonBase<ButtonTypeMap> = forwardRef<HTMLButtonElem
           <Box className="Button-hover-overlay" component="span" />
         </LoadingButton>
       </Tooltip>
-    )
-  },
-) as ExtendButtonBase<ButtonTypeMap>
+    );
+  }
+) as ExtendButtonBase<ButtonTypeMap>;

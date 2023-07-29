@@ -145,7 +145,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
                   <Button
                     icon={<MagnifyingGlassIcon fontSize="inherit" />}
                     tooltip="Search"
-                    variant="ghost"
+                    variant="outlined"
                     type="button"
                     corners="rounded"
                     label="search"
