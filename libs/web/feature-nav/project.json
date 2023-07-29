@@ -1,0 +1,16 @@
+{
+  "name": "web--feature-nav",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/web/feature-nav/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/web/feature-nav/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  }
+}
