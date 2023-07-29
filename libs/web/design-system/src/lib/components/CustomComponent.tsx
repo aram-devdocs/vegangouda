@@ -1,4 +1,4 @@
-import { CSSObject } from '@mui/material/styles'
+import { CSSObject } from '@mui/material'
 
 export interface CustomVariants {
   props: Record<string, unknown>

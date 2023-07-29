@@ -4,7 +4,6 @@ import { Route, Routes, Link } from 'react-router-dom';
 // import { WebDesignSystem } from '@vegangouda/web/design-system';
 
 export function App() {
-
   return (
     <div>
       {/* <NxWelcome title="web" /> */}
@@ -14,12 +13,7 @@ export function App() {
       {/* Feel free to move and update them to fit your needs */}
 
       <Routes>
-        <Route
-          path="/"
-          element={<div>{
-            /* <Typography>Test</Typography> */
-            }</div>}
-        />
+        <Route path="/" element={<div>{<Typography>Test</Typography>}</div>} />
         {/* <Route path="/design-system" element={<WebDesignSystem />} /> */}
         <Route
           path="/page-2"

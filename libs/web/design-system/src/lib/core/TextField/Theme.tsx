@@ -1,4 +1,4 @@
-import { Components, Theme } from '@mui/material/styles'
+import { Components, Theme } from '@mui/material'
 
 export const createTextFieldTheme = (theme: Theme): Components['MuiTextField'] => {
   return {

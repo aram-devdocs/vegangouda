@@ -1,4 +1,4 @@
-import { Components, Theme } from '@mui/material/styles'
+import { Components, Theme } from '@mui/material'
 import { CaretRightIcon } from '../../icons'
 
 export const createAccordionTheme = (theme: Theme): Components['MuiAccordion'] => {

@@ -49,7 +49,7 @@ export const Stepper = ({
                           sx={theme => ({
                             fontSize: 20,
                             marginBottom: '4px',
-                            color: theme.palette.on.background.accent,
+                            color: 'on.background.highEmphasis',
                           })}
                         />
                       )

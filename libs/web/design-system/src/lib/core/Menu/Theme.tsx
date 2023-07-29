@@ -1,4 +1,4 @@
-import { Components, Theme } from '@mui/material/styles'
+import { Components, Theme } from '@mui/material'
 
 export const createMenuItemTheme = (theme: Theme): Components['MuiMenuItem'] => {
   return {

@@ -14,7 +14,7 @@ export const MobileLabel: FC<MobileLabelProps> = ({ label, locked }) => {
   const styles = {
     color: locked ? 'on.background.disabled' : 'on.background.highEmphasis',
     backgroundColor: 'background.main',
-    fill: locked ? theme.palette.on.background.disabled : theme.palette.on.background.highEmphasis,
+    fill: locked ? 'on.background.disabled' : 'on.background.highEmphasis',
   }
   return (
     <Box

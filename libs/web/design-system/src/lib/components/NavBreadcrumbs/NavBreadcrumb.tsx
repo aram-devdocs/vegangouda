@@ -59,8 +59,8 @@ export const NavBreadcrumb: FC<NavBreadcrumbProps> = ({
     backgroundColor: 'background.main',
     fill: 'on.background.highEmphasis',
     '.breadcrumb-divider': {
-      fill: theme.palette.background.main,
-      stroke: theme.palette.on.background.highEmphasis,
+      fill: 'background.main', // This is the color of the divider 'behind' the icon
+      stroke: 'on.background.highEmphasis'
     },
   }
   const selectedStyles = {
@@ -68,14 +68,14 @@ export const NavBreadcrumb: FC<NavBreadcrumbProps> = ({
     backgroundColor: 'button.main',
     fill: 'on.button.highEmphasis',
     '.breadcrumb-divider': {
-      fill: theme.palette.button.main,
-      stroke: theme.palette.on.button.highEmphasis,
+      fill: 'button.main', // This is the color of the divider 'behind' the icon
+      stroke: 'on.button.highEmphasis'
     },
   }
   if (locked) {
-    styles.color = theme.palette.on.background.disabled
-    styles.fill = theme.palette.on.background.disabled
-    styles['.breadcrumb-divider'].stroke = theme.palette.on.background.disabled
+    styles.color = 'on.background.disabled'
+    styles.fill = 'on.background.disabled'
+    styles['.breadcrumb-divider'].stroke = 'on.background.disabled'
   }
   if (selected) {
     styles = selectedStyles

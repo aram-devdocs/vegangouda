@@ -1,4 +1,4 @@
-import { Components, Theme } from '@mui/material/styles'
+import { Components, Theme } from '@mui/material'
 
 export const createDialogActionsTheme = (theme: Theme): Components['MuiDialogActions'] => {
   return {

@@ -1,4 +1,4 @@
-import { Components, Theme } from '@mui/material/styles'
+import { Components, Theme } from '@mui/material'
 import { ForwardSlashIcon } from '../../icons'
 
 export const createBreadcrumbsTheme = (theme: Theme): Components['MuiBreadcrumbs'] => {
