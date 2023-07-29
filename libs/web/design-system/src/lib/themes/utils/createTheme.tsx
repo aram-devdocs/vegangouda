@@ -2,6 +2,7 @@ import { createTheme as createMuiTheme, Theme } from '@mui/material';
 import { merge } from 'lodash';
 import { createComponents } from './createComponents';
 
+import { brandTheme } from '../brands/vegangouda';
 export const createTheme = (): Theme => {
   const defaultTheme = createMuiTheme({
     breakpoints: {
@@ -13,9 +14,9 @@ export const createTheme = (): Theme => {
         xl: 1201,
       },
     },
-    // shadows: brandTheme.shadows,
-    // palette: brandTheme.palette,
-    // typography: brandTheme.typography,
+    shadows: brandTheme.shadows,
+    palette: brandTheme.palette,
+    typography: brandTheme.typography,
     components: {
       MuiCssBaseline: {
         styleOverrides: {
