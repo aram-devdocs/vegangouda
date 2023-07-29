@@ -28,6 +28,7 @@ export * from './lib/components/TabPanel/TabPanel';
 export * from './lib/components/Toast/Toast';
 export * from './lib/components/UploadImageField/UploadImageField';
 export * from './lib/components/Pagination/Pagination';
+export * from './lib/components/AnimatedTypography/AnimatedTypography';
 
 // Core
 export * from './lib/core/IconButton/IconButton';
@@ -87,6 +88,7 @@ export * from './lib/layouts/LayoutContainer';
 export * from './lib/stickers';
 export * from './lib/themes';
 export * from './lib/utils';
+export * from './lib/constants';
 export {
   Collapse,
   ClickAwayListener,

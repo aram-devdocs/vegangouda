@@ -1,0 +1,16 @@
+{
+  "name": "web-utils-storybook",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/web/utils-storybook/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/web/utils-storybook/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  }
+}

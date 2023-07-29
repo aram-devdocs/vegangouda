@@ -1,17 +1,11 @@
 import type { Meta } from '@storybook/react';
 import { App } from './app';
-import { BrowserRouter } from 'react-router-dom';
+import { TestingDecorator } from '@vegangouda/web/utils-storybook';
 
 const Story: Meta<typeof App> = {
   component: App,
   title: 'App',
-  decorators: [
-    (Story) => (
-      <BrowserRouter>
-        <Story />
-      </BrowserRouter>
-    ),
-  ],
+  decorators: [TestingDecorator],
 };
 export default Story;
 

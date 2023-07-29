@@ -1,5 +1,11 @@
-import { Card, Typography } from '@vegangouda/web/design-system';
-import { useState } from 'react';
+import {
+  Card,
+  Typography,
+  AnimatedTypography,
+  animationProps,
+  Box,
+} from '@vegangouda/web/design-system';
+import { Fragment, useState } from 'react';
 import { EmailLogin } from './EmailLogin';
 import { LoginCredentials } from '../constants/type';
 import { useAuthContext } from '@vegangouda/web/context';
@@ -15,11 +21,12 @@ export const Login = () => {
   const onSubmitCredentials = (credentials: LoginCredentials) => {
     login().then(() => {
       navigate(state?.path || '/');
-      console.log('login successful')
+      console.log('login successful');
     });
   };
   return (
     <Card
+      key={`login-card-${(isEmailLogin && 'email') || 'mobile'}`}
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -31,13 +38,14 @@ export const Login = () => {
         margin: 'auto',
       }}
     >
-      <Typography>Login</Typography>
-      {isEmailLogin ? (
-        <EmailLogin onSubmit={onSubmitCredentials} />
-      ) : (
-        <Typography>Not Email Login</Typography>
-      )}
-
+      <Box sx={{ ...animationProps.smooth }}>
+        <Typography>Login</Typography>
+        {isEmailLogin ? (
+          <EmailLogin onSubmit={onSubmitCredentials} />
+        ) : (
+          <Typography>Not Email Login</Typography>
+        )}
+      </Box>
       <Typography
         variant="subtitle2"
         sx={{
@@ -46,13 +54,18 @@ export const Login = () => {
           '&:hover': {
             color: 'on.background.mediumEmphasis',
           },
-          // add to bottom of card
+          //  place 10rem from the bottom
           position: 'absolute',
-          bottom: '16px',
+          bottom: '2rem',
         }}
         onClick={() => setIsEmailLogin(!isEmailLogin)}
       >
-        Login with {isEmailLogin ? 'mobile' : 'email'}
+        Login with{' '}
+        <AnimatedTypography
+          animation="smooth"
+          variant="subtitle2"
+          text={isEmailLogin ? 'mobile' : 'email'}
+        />
       </Typography>
     </Card>
   );
