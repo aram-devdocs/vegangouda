@@ -60,6 +60,10 @@ export type GetUserTypeByEmailInput = {
   email: string;
 };
 
+export type GetUserTypeByMobileInput = {
+  mobile: string;
+};
+
 export type GetUserTypeOutput = {
   userId: string;
   email: string;

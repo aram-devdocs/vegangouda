@@ -4,6 +4,7 @@ import {
   CreateUserTypeOutput,
   GetUserTypeInput,
   GetUserTypeByEmailInput,
+  GetUserTypeByMobileInput,
   GetUserTypeOutput,
   UpdateUserTypeInput,
   UpdateUserTypeOutput,
@@ -30,11 +31,16 @@ export const User = {
       values: [email],
     });
 
-    if (!res.rows[0]) {
-      throw new Error(`User with email: ${email} not found`);
-    }
+    return res.rows[0] as GetUserTypeOutput | null;
+  },
 
-    return res.rows[0] as GetUserTypeOutput;
+  async findByMobile({ mobile }: GetUserTypeByMobileInput) {
+    const res = await query({
+      text: `SELECT * FROM users WHERE mobile = $1`,
+      values: [mobile],
+    });
+
+    return res.rows[0] as GetUserTypeOutput | null;
   },
 
   async findByEmailWithPassword({ email }: GetUserTypeByEmailInput) {

@@ -5,7 +5,7 @@ import {
   animationProps,
   Box,
 } from '@vegangouda/web/design-system';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { EmailLogin } from './EmailLogin';
 import { LoginCredentials } from '../constants/type';
 import { useAuthContext } from '@vegangouda/web/context';

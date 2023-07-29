@@ -1,7 +1,7 @@
 import { User } from '../models/user';
 import {
   validateEmail,
-  validateMobile,
+  //   validateMobile,
   validatePassword,
 } from '@vegangouda/shared/utils-validation';
 import bcrypt from 'bcrypt';
@@ -9,7 +9,7 @@ import {
   userCreateSchema,
   userUpdateSchema,
   emailLoginSchema,
-  mobileLoginSchema,
+  //   mobileLoginSchema,
 } from '../schemas/userSchema';
 import {
   CreateUserTypeInput,
@@ -23,7 +23,7 @@ import {
   DeleteUserTypeOutput,
   LoginOutput,
   LoginWithEmailInput,
-  LoginWithMobileInput,
+  //   LoginWithMobileInput,
 } from '../types/userType';
 
 import jwt from 'jsonwebtoken';
@@ -36,19 +36,33 @@ export const UserService = {
       throw new Error('Invalid input');
     }
 
-    const { email, password } = input;
+    const { email, password, mobile } = input;
 
-    const emailError = validateEmail(email);
+    // see if user exists with email or mobile
+
+    const doesEmailExistOnUser = await User.findByEmail({ email });
+
+    if (doesEmailExistOnUser) {
+      throw new Error('Email already exists');
+    }
+
+    const doesMobileExistOnUser = await User.findByMobile({ mobile });
+
+    if (doesMobileExistOnUser) {
+      throw new Error('Mobile already exists');
+    }
+
+    const emailError = !validateEmail(email);
     if (emailError) {
       throw new Error('Invalid email');
     }
 
-    const passwordError = validatePassword(password);
+    const passwordError = !validatePassword(password);
     if (passwordError) {
       throw new Error('Invalid password');
     }
 
-    const hashedPassword = await bcrypt.hash(password, saltKey);
+    const hashedPassword = await bcrypt.hash(password, Number(saltKey));
 
     const user = await User.create({
       ...input,
