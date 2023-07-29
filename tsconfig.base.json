@@ -22,6 +22,9 @@
       "@vegangouda/web/design-system": ["libs/web/design-system/src/index.ts"],
       "@vegangouda/web/feature-auth": ["libs/web/feature-auth/src/index.ts"],
       "@vegangouda/web/feature-nav": ["libs/web/feature-nav/src/index.ts"],
+      "@vegangouda/web/shared-components": [
+        "libs/web/shared-components/src/index.ts"
+      ],
       "@vegangouda/web/utils-storybook": [
         "libs/web/utils-storybook/src/index.ts"
       ]

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box } from '@vegangouda/web/design-system';
 import { useAuthContext } from '@vegangouda/web/context';
 import { NavButton, NavButtonProps } from './NavButton';
 import { useLocation } from 'react-router-dom';

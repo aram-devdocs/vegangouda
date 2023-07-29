@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Snackbar } from '../../core/Snackbar/Snackbar';
 import { Alert } from '../../core/Alert/Alert';
 import { useToast } from '@vegangouda/web/context';
+
 export function Toast() {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);

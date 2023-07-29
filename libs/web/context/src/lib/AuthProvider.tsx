@@ -1,8 +1,8 @@
 import React, { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { FuncProviderProps } from './types';
-import { useToast } from './ToastProvider';
-
+import { baseURL, defaultTimeout } from '../../src/constants';
+import { PageLoader } from '@vegangouda/web/shared-components';
 interface AuthContextProps {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -16,58 +16,37 @@ export const AuthContext = createContext<AuthContextProps>({
 });
 
 export const AuthProvider = ({ children }: FuncProviderProps) => {
-  const checkIfLoggedIn = () => {
-    const token = localStorage.getItem('access_token');
-    console.log('token', token);
-    if (token) {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  const validateToken = async (token: string) => {
+    try {
       // post /user/me to get fresh token
-      axios
-        .post('/user/me', {
-          token,
-        })
-        .then((response) => {
-          console.log(response.data);
-          localStorage.setItem('access_token', response.data.token);
-          return true;
-        })
-        .catch((error) => {
-          console.log(error);
-          localStorage.removeItem('access_token');
-          return false;
-        });
-    }
-
-    return false;
-  };
-
-  // const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-    localStorage.getItem('access_token') ? checkIfLoggedIn() : false
-  );
-
-  // Set axios defaults
-  useEffect(() => {
-    axios.defaults.baseURL =
-      process.env.NODE_ENV === 'production'
-        ? 'https://vegan-gouda.herokuapp.com/'
-        : 'http://localhost:3000';
-    axios.defaults.timeout = 5000; // Set your desired timeout value in milliseconds
-
-    // Check if user is logged in on app start
-    checkIsLoggedIn();
-  }, []);
-
-  const checkIsLoggedIn = () => {
-    // Retrieve token from local storage
-    const token = localStorage.getItem('access_token');
-
-    if (token) {
-      // TODO: You can implement additional checks on the token, such as token expiration validation, etc.
+      const response = await axios.post('/user/me', { token });
+      localStorage.setItem('access_token', response.data.token);
       setIsAuthenticated(true);
-    } else {
+    } catch (error) {
+      console.log(error);
+      localStorage.removeItem('access_token');
       setIsAuthenticated(false);
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // Set axios defaults
+    axios.defaults.baseURL = baseURL;
+    axios.defaults.timeout = defaultTimeout;
+
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      // Token exists, so check its validity
+      validateToken(token);
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
   const login = async (email: string, password: string) => {
     try {
@@ -105,6 +84,11 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
       console.error('Logout failed:', error);
     }
   };
+
+  if (loading) {
+    // Show a loader while validating the token
+    return <PageLoader />;
+  }
 
   return (
     <AuthContext.Provider value={{ login, logout, isAuthenticated }}>
