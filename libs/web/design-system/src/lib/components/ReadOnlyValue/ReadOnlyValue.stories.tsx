@@ -20,8 +20,8 @@ export const Default: Story = {
 export const WithLink: Story = {
   args: {
     label: 'URL',
-    value: 'https://demo.indr.com',
-    href: 'https://demo.indr.com',
+    value: 'https://demo.vegangouda.com',
+    href: 'https://demo.vegangouda.com',
   },
 }
 

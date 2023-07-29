@@ -1,4 +1,3 @@
-import { PaletteTheme } from '@indr/shared/theme'
 
 const colors = [
   'accent.10',
@@ -19,7 +18,7 @@ const colors = [
 const colorsProperty = [10, 4, 13, 7, 2, 8, 12, 1, 6, 11, 3, 5, 9] as const
 
 type Color = (typeof colors)[number]
-type AccentKeys = keyof PaletteTheme['accent']
+type AccentKeys = keyof typeof colorsProperty
 
 /**
  * Return property color.

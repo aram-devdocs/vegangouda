@@ -1,32 +1,27 @@
-import { ForwardedRef, forwardRef, useState } from 'react'
-import { TextField } from '../TextField/TextField'
-import { InputAdornment } from '../Input/Input'
-import { Button } from '../Button/Button'
-import { HideIcon, VisibilityIcon } from '../../icons'
-import { StandardTextFieldProps } from '@mui/material/TextField/TextField'
-import { getPasswordMessage } from '@indr/shared/util-validation'
+import { ForwardedRef, forwardRef, useState } from 'react';
+import { TextField } from '../TextField/TextField';
+import { InputAdornment } from '../Input/Input';
+import { Button } from '../Button/Button';
+import { HideIcon, VisibilityIcon } from '../../icons';
+import { StandardTextFieldProps } from '@mui/material/TextField/TextField';
 
 export interface PasswordFieldProps extends StandardTextFieldProps {
-  minLengthPassword: number
+  minLengthPassword: number;
   /** @default false */
-  disableHelperText?: boolean
+  disableHelperText?: boolean;
 }
 
 export const PasswordField = forwardRef(
   (props: PasswordFieldProps, ref: ForwardedRef<HTMLDivElement>) => {
-    const [showPassword, setShowPassword] = useState(false)
-    const { minLengthPassword, disableHelperText, ...restProps } = props
+    const [showPassword, setShowPassword] = useState(false);
+    const { minLengthPassword, disableHelperText, ...restProps } = props;
 
     return (
       <TextField
         {...restProps}
         ref={ref}
         type={showPassword ? 'text' : 'password'}
-        helperText={
-          !disableHelperText
-            ? props.helperText || getPasswordMessage(props.value as string, minLengthPassword)
-            : ''
-        }
+        helperText={!disableHelperText ? props.helperText || 'TODO' : ''}
         InputProps={{
           sx: {
             'input::-ms-reveal': {
@@ -44,12 +39,12 @@ export const PasswordField = forwardRef(
                 corners="rounded"
                 label="toggle password"
                 onClick={() => setShowPassword(!showPassword)}
-                onMouseDown={e => e.preventDefault()}
+                onMouseDown={(e: any) => e.preventDefault()} // TODO: fix type
               />
             </InputAdornment>
           ),
         }}
       />
-    )
+    );
   }
-)
+);

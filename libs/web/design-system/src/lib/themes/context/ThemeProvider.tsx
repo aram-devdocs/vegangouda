@@ -1,52 +1,43 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/ban-types */
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   ThemeProvider as MuiThemeProvider,
   CssBaseline,
   Theme as ThemeDefinition,
   useMediaQuery,
   GlobalStyles,
-} from '@mui/material'
-import { THEMES } from '../brands'
-import { Theme } from '@indr/web/data-access'
+} from '@mui/material';
+
+type Theme = 'dark' | 'light';
 
 export interface ThemeProviderProps {
-  noBaseline?: boolean
-  children?: React.ReactNode
-  themeName?: Theme
+  noBaseline?: boolean;
+  children?: React.ReactNode;
+  themeName?: Theme;
 }
 
 export interface IThemeContext {
-  currentTheme: Theme
-  setTheme: (name: Theme) => void
+  currentTheme: Theme;
+  setTheme: (name: Theme) => void;
 }
 
 export const ThemeContext = React.createContext<IThemeContext>({
-  currentTheme: Theme.Indr,
+  currentTheme: 'light',
   setTheme: () => {},
-})
-
-function getTheme(name: Theme): ThemeDefinition {
-  const found = THEMES.find(theme => theme.name === name)
-  if (!found) {
-    console.error('Invalid theme name specified: ', name)
-    return THEMES[0]
-  }
-  return found
-}
+});
 
 export const ThemeProvider = (props: ThemeProviderProps) => {
-  const [currentTheme, setTheme] = useState<Theme>(props.themeName || Theme.Indr)
+  const [currentTheme, setTheme] = useState<Theme>(props.themeName || 'light');
   const contextValue = {
     currentTheme,
     setTheme,
-  }
-  const isPrint = useMediaQuery('print')
+  };
+  const isPrint = useMediaQuery('print');
 
   return (
     <ThemeContext.Provider value={contextValue}>
-      <MuiThemeProvider theme={getTheme(props.themeName || currentTheme)}>
+      <MuiThemeProvider theme={currentTheme}>
         <GlobalStyles
           styles={{
             '@page': {
@@ -61,5 +52,5 @@ export const ThemeProvider = (props: ThemeProviderProps) => {
         {props.children}
       </MuiThemeProvider>
     </ThemeContext.Provider>
-  )
-}
+  );
+};

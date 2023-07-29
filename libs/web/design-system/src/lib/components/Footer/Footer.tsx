@@ -1,22 +1,21 @@
-import React from 'react'
-import { Typography } from '../../core/Typography/Typography'
-import { Box } from '../../core/Box/Box'
-import { Stack } from '../../core/Stack/Stack'
-import { useMediaQuery } from '@vegangouda/design-system'
+import React from 'react';
+import { Typography } from '../../core/Typography/Typography';
+import { Box } from '../../core/Box/Box';
+import { Stack } from '../../core/Stack/Stack';
 
-const DEFAULT_RIGHTS = '© Indr, Inc. 2022 All Rights Reserved.'
+const DEFAULT_RIGHTS = '© Vegan Gouda, Inc. 2022 All Rights Reserved.';
 
 export interface FooterProps {
   /** Copyright text */
-  rights?: string
+  rights?: string;
   /** Text and href for links */
-  links?: Array<React.ReactNode>
+  links?: Array<React.ReactNode>;
   /** Build information that is shown in the corner */
-  buildInfo?: string
+  buildInfo?: string;
   /** Disable Footer interactivity in the links
    * @default false
    */
-  isInteractivityDisabled?: boolean
+  isInteractivityDisabled?: boolean;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -25,7 +24,7 @@ export const Footer: React.FC<FooterProps> = ({
   buildInfo,
   isInteractivityDisabled,
 }) => {
-  const isPrint = useMediaQuery('print')
+  const isPrint = " useMediaQuery('print')";
   const printStyles = isPrint
     ? {
         color: 'on.background.mediumEmphasis',
@@ -37,7 +36,7 @@ export const Footer: React.FC<FooterProps> = ({
         justifyContent: 'flex-start',
         breakAfter: 'always',
       }
-    : {}
+    : {};
 
   return (
     <Box
@@ -94,5 +93,5 @@ export const Footer: React.FC<FooterProps> = ({
         </Typography>
       )}
     </Box>
-  )
-}
+  );
+};

@@ -1,4 +1,3 @@
-import { checkValidFileType, acceptableImages } from '@indr/shared/util-validation'
 import { ChangeEvent, useRef, useState } from 'react'
 import { Box } from '../../core/Box/Box'
 import { Button } from '../../core/Button/Button'
@@ -27,7 +26,7 @@ export function UploadImageField({
   async function uploadImage(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (file) {
-      const isValid = checkValidFileType(file)
+      const isValid = "checkValidFileType(file)" // TODO
       const newImage = URL.createObjectURL(file)
       setImage(isValid ? newImage : '')
       onChange(file)
@@ -58,7 +57,7 @@ export function UploadImageField({
         />
         <label htmlFor="icon-button-photo">
           <input
-            accept={acceptableImages}
+            // accept={acceptableImages}
             id="icon-button-photo"
             type="file"
             onChange={uploadImage}

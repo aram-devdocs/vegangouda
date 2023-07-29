@@ -1,11 +1,9 @@
-import { BrandTheme } from '@indr/shared/theme'
-import { createTheme as createMuiTheme, Theme } from '@mui/material'
-import { merge } from 'lodash'
-import { createComponents } from './createComponents'
+import { createTheme as createMuiTheme, Theme } from '@mui/material';
+import { merge } from 'lodash';
+import { createComponents } from './createComponents';
 
-export const createTheme = (brandTheme: BrandTheme, name: Theme['name']): Theme => {
+export const createTheme = (): Theme => {
   const defaultTheme = createMuiTheme({
-    name,
     breakpoints: {
       values: {
         xs: 0,
@@ -13,14 +11,11 @@ export const createTheme = (brandTheme: BrandTheme, name: Theme['name']): Theme 
         md: 769,
         lg: 1025,
         xl: 1201,
-        xxl: 1441,
-        mobileDialog: 0,
-        desktopDialog: 560,
       },
     },
-    shadows: brandTheme.shadows,
-    palette: brandTheme.palette,
-    typography: brandTheme.typography,
+    // shadows: brandTheme.shadows,
+    // palette: brandTheme.palette,
+    // typography: brandTheme.typography,
     components: {
       MuiCssBaseline: {
         styleOverrides: {
@@ -30,12 +25,12 @@ export const createTheme = (brandTheme: BrandTheme, name: Theme['name']): Theme 
         },
       },
     },
-  })
+  });
 
-  const components = createComponents(defaultTheme)
-  const themeComponents = merge(defaultTheme.components, components)
+  const components = createComponents(defaultTheme);
+  const themeComponents = merge(defaultTheme.components, components);
   return createMuiTheme({
     ...defaultTheme,
     components: themeComponents,
-  })
-}
+  });
+};
