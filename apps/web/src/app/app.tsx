@@ -2,10 +2,12 @@ import NxWelcome from './nx-welcome';
 
 import { Route, Routes, Link } from 'react-router-dom';
 
+// import { WebDesignSystem } from '@vegangouda/web/design-system';
+
 export function App() {
   return (
     <div>
-      <NxWelcome title="web" />
+      {/* <NxWelcome title="web" /> */}
 
       {/* START: routes */}
       {/* These routes and navigation have been generated for you */}
@@ -17,6 +19,9 @@ export function App() {
         <ul>
           <li>
             <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/design-system">WebDesignSystem</Link>
           </li>
           <li>
             <Link to="/page-2">Page 2</Link>
@@ -33,6 +38,7 @@ export function App() {
             </div>
           }
         />
+        {/* <Route path="/design-system" element={<WebDesignSystem />} /> */}
         <Route
           path="/page-2"
           element={
