@@ -1,13 +1,13 @@
-import { InputAdornment, SelectProps, useTheme } from '@mui/material'
-import { mergeRefs } from 'react-merge-refs'
-import { TextField, TextFieldProps } from '../../core/TextField/TextField'
-import { CaretDownIcon, SvgIconComponent } from '../../icons'
-import { mergeSx } from '../../themes/utils/mergeSx'
-import { forwardRef } from 'react'
-import { useSize } from '../../hooks/useSize'
+import { InputAdornment, SelectProps, useTheme } from '@mui/material';
+import { mergeRefs } from 'react-merge-refs';
+import { TextField, TextFieldProps } from '../../core/TextField/TextField';
+import { CaretDownIcon, SvgIconComponent } from '../../icons';
+import { mergeSx } from '../../themes/utils/mergeSx';
+import { forwardRef } from 'react';
+import { useSize } from '../../hooks/useSize';
 
-const selectIconFontSize = 32
-const selectIconPaddingRight = 2
+const selectIconFontSize = 32;
+const selectIconPaddingRight = 2;
 
 export interface DropdownProps
   extends Pick<
@@ -27,11 +27,17 @@ export interface DropdownProps
     >,
     Pick<
       SelectProps,
-      'multiple' | 'required' | 'onClose' | 'onOpen' | 'open' | 'renderValue' | 'displayEmpty'
+      | 'multiple'
+      | 'required'
+      | 'onClose'
+      | 'onOpen'
+      | 'open'
+      | 'renderValue'
+      | 'displayEmpty'
     > {
-  leftIcon?: SvgIconComponent
-  hideBorder?: boolean
-  size?: 'small' | 'medium' | 'large' | 'xlarge'
+  leftIcon?: SvgIconComponent;
+  hideBorder?: boolean;
+  size?: 'small' | 'medium' | 'large' | 'xlarge';
 }
 
 export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
@@ -52,12 +58,12 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       displayEmpty,
       ...textFieldProps
     },
-    ref,
+    ref
   ) => {
-    const theme = useTheme()
-    const { size: dropdownSize, ref: refSize } = useSize()
+    const theme = useTheme();
+    const { size: dropdownSize, ref: refSize } = useSize();
 
-    const color = 'on.background.highEmphasis'
+    const color = 'on.background.highEmphasis';
     const width =
       size === 'small'
         ? 112
@@ -67,7 +73,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
         ? 224
         : size === 'xlarge'
         ? 280
-        : undefined
+        : undefined;
 
     return (
       <TextField
@@ -102,7 +108,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
               marginLeft: 0,
             },
           },
-          textFieldProps.sx,
+          textFieldProps.sx
         )}
         SelectProps={{
           multiple,
@@ -115,7 +121,9 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
           SelectDisplayProps: {
             tabIndex,
             style: {
-              paddingRight: selectIconFontSize + parseInt(theme.spacing(selectIconPaddingRight)),
+              paddingRight:
+                selectIconFontSize +
+                parseInt(theme.spacing(selectIconPaddingRight)),
               paddingLeft: theme.spacing(LeftIcon ? 6 : 2),
               backgroundColor: 'transparent',
               ...theme.typography.body1,
@@ -161,9 +169,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
             borderWidth: hideBorder ? 0 : 1,
             backgroundColor: 'transparent',
             paddingLeft: 0,
-            borderColor: error
-              ? theme.palette.error.main
-              : theme.palette.on.background.highEmphasis,
+            borderColor: theme.palette.error.main,
             borderStyle: 'solid',
             borderRadius: 0,
             '&:hover': {
@@ -171,23 +177,23 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
             },
             '&.Mui-focused': {
               backgroundColor: 'transparent',
-              borderColor: error ? theme.palette.error.main : theme.palette.primary.variant,
+              borderColor: theme.palette.error.main,
             },
             '&.Mui-disabled': {
-              backgroundColor: theme.palette.button.disabled,
-              borderColor: theme.palette.on.button.disabled,
+              backgroundColor: 'transparent',
+              borderColor: 'ActiveBorder',
             },
           },
         }}
       />
-    )
-  },
-)
+    );
+  }
+);
 function SelectIcon(props: Parameters<SvgIconComponent>[0]) {
   return (
     <CaretDownIcon
       {...props}
-      sx={theme => ({
+      sx={(theme) => ({
         fontSize: selectIconFontSize,
         '&.MuiSelect-icon': {
           color: 'inherit',
@@ -195,5 +201,5 @@ function SelectIcon(props: Parameters<SvgIconComponent>[0]) {
         },
       })}
     />
-  )
+  );
 }
