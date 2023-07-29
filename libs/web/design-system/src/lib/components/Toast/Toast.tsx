@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Snackbar } from '../../core/Snackbar/Snackbar';
 import { Alert } from '../../core/Alert/Alert';
-import { useToast } from '@vegangouda/web/context';
+import { useToast } from '../../context/ToastProvider';
 
 export function Toast() {
   const { toast } = useToast();

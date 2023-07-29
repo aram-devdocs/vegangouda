@@ -8,7 +8,7 @@ import {
   IconButton,
 } from '@vegangouda/web/design-system';
 import { authButtonStyleProps } from '../constants/style';
-import { useToast } from '@vegangouda/web/context';
+import { useToast } from '@vegangouda/web/design-system';
 import {
   validateEmail,
   validatePassword,

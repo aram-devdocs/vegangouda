@@ -8,10 +8,10 @@ import {
 import { useState } from 'react';
 import { EmailLogin } from './EmailLogin';
 import { EmailCredentials, LoginCredentials } from '../constants/type';
-import { useAuthContext } from '@vegangouda/web/context';
+import { useAuthContext } from '@vegangouda/web/design-system';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from '@vegangouda/web/context';
+import { useToast } from '@vegangouda/web/design-system';
 
 export const Login = () => {
   const [isEmailLogin, setIsEmailLogin] = useState<boolean>(true);

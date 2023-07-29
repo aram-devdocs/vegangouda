@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { FuncProviderProps } from './types';
-import { baseURL, defaultTimeout } from '../../src/constants';
+import { FuncProviderProps, baseURL, defaultTimeout } from '../constants';
 import { PageLoader } from '@vegangouda/web/shared-components';
 interface AuthContextProps {
   login: (email: string, password: string) => Promise<void>;

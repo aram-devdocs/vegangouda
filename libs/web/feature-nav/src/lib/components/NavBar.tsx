@@ -1,5 +1,5 @@
 import { Box } from '@vegangouda/web/design-system';
-import { useAuthContext } from '@vegangouda/web/context';
+import { useAuthContext } from '@vegangouda/web/design-system';
 import { NavButton, NavButtonProps } from './NavButton';
 import { useLocation } from 'react-router-dom';
 

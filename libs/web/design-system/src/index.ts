@@ -1,4 +1,6 @@
 import './types.d.ts';
+
+export * from './lib/components/RequireAuth';
 export * from './lib/components/Bullet/Bullet';
 export * from './lib/components/ConfirmationDialog/ConfirmationDialog';
 export * from './lib/components/Dropdown/Dropdown';
@@ -97,3 +99,8 @@ export {
   useTheme,
   styled,
 } from '@mui/material';
+
+// context
+export * from './lib/context/AuthProvider';
+export * from './lib/context/AppProvider';
+export * from './lib/context/ToastProvider';

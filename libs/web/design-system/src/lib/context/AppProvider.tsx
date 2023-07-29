@@ -1,5 +1,5 @@
 import React, { createContext, useState } from 'react';
-import { FuncProviderProps } from './types';
+import { FuncProviderProps } from '../constants';
 
 interface AppContextProps {
   count: number;

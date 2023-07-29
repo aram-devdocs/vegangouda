@@ -5,7 +5,7 @@ import {
   AppProvider,
   AuthProvider,
   ToastProvider,
-} from '@vegangouda/web/context';
+} from '@vegangouda/web/design-system';
 import axios from 'axios';
 
 import App from './app/app';
