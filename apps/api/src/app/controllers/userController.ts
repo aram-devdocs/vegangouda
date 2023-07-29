@@ -7,7 +7,18 @@ import {
   UpdateUserTypeInput,
   DeleteUserTypeInput,
   LoginWithEmailInput,
+  MeInput,
 } from '../types/userType';
+
+export async function me(request: FastifyRequest, reply: FastifyReply) {
+  try {
+    const input = request.body as MeInput;
+    const user = await UserService.me(input);
+    reply.send(user);
+  } catch (error) {
+    throw new Error(error);
+  }
+}
 
 export async function createUser(request: FastifyRequest, reply: FastifyReply) {
   try {

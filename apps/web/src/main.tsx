@@ -6,12 +6,14 @@ import {
   AuthProvider,
   ToastProvider,
 } from '@vegangouda/web/context';
+import axios from 'axios';
 
 import App from './app/app';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
 root.render(
   <StrictMode>
     <BrowserRouter>

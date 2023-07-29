@@ -23,12 +23,54 @@ import {
   DeleteUserTypeOutput,
   LoginOutput,
   LoginWithEmailInput,
+  MeInput,
   //   LoginWithMobileInput,
 } from '../types/userType';
 
 import jwt from 'jsonwebtoken';
 const saltKey = process.env.SALT_KEY;
 export const UserService = {
+  async me(input: MeInput) {
+    // see if input.token has a valid jwt that is both valid and not expired, if so return a fresh token
+
+    const { token } = input;
+
+    const decoded = jwt.verify(token, saltKey);
+
+    if (!decoded) {
+      throw new Error('Invalid token');
+    }
+    console.log('are we here');
+    console.log(decoded);
+    const { email } = decoded as any;
+
+    const user = await User.findByEmail({ email });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // generate jwt
+    const newToken = jwt.sign(
+      {
+        userId: user.userId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        mobile: user.mobile,
+      },
+
+      saltKey,
+      {
+        expiresIn: '1d',
+      }
+    );
+
+    // remove password
+
+    return { token: newToken } as LoginOutput;
+  },
+
   async create(input: CreateUserTypeInput) {
     const validInput = await userCreateSchema.validateAsync(input);
 
@@ -81,12 +123,12 @@ export const UserService = {
 
     const { email, password } = input;
 
-    const emailError = validateEmail(email);
+    const emailError = !validateEmail(email);
     if (emailError) {
       throw new Error('Invalid email');
     }
 
-    const passwordError = validatePassword(password);
+    const passwordError = !validatePassword(password);
     if (passwordError) {
       throw new Error('Invalid password');
     }
@@ -102,6 +144,7 @@ export const UserService = {
   },
 
   async loginWithEmail(input: LoginWithEmailInput) {
+    console.log('input', input);
     const validInput = await emailLoginSchema.validateAsync(input);
 
     if (!validInput) {
@@ -110,7 +153,7 @@ export const UserService = {
 
     const { email, password } = input;
 
-    const emailError = validateEmail(email);
+    const emailError = !validateEmail(email);
 
     if (emailError) {
       throw new Error('Invalid email');
@@ -140,6 +183,9 @@ export const UserService = {
         expiresIn: '1d',
       }
     );
+
+    // remove password
+    delete user.password;
 
     return { ...user, token } as LoginOutput;
   },

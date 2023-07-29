@@ -7,8 +7,10 @@ import {
   getUserById,
   getUserByEmail,
   loginWithEmail,
+  me,
 } from '../controllers/userController';
 export default async function (fastify: FastifyInstance) {
+  fastify.post('/user/me', me);
   fastify.post('/user/create', createUser);
   //   TODO: Add middleware to check if user is logged in
   fastify.post('/user/update', updateUser);

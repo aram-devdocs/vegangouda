@@ -7,22 +7,36 @@ import {
 } from '@vegangouda/web/design-system';
 import { useState } from 'react';
 import { EmailLogin } from './EmailLogin';
-import { LoginCredentials } from '../constants/type';
+import { EmailCredentials, LoginCredentials } from '../constants/type';
 import { useAuthContext } from '@vegangouda/web/context';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@vegangouda/web/context';
 
 export const Login = () => {
   const [isEmailLogin, setIsEmailLogin] = useState<boolean>(true);
   const { login } = useAuthContext();
   const { state } = useLocation();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
-  const onSubmitCredentials = (credentials: LoginCredentials) => {
-    login().then(() => {
-      navigate(state?.path || '/');
-      console.log('login successful');
-    });
+  const onSubmitCredentials = (credentials: EmailCredentials) => {
+    const { email, password } = credentials;
+    login(email, password)
+      .then(() => {
+        navigate(state?.path || '/');
+        showToast({
+          type: 'success',
+          message: 'Login successful',
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        showToast({
+          type: 'error',
+          message: 'Login failed',
+        });
+      });
   };
   return (
     <Card

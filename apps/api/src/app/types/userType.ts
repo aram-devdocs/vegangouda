@@ -6,6 +6,10 @@ export type CreateUserTypeInput = {
   mobile: string; // required
 };
 
+export type MeInput = {
+  token: string;
+};
+
 export type CreateUserTypeOutput = {
   userId: string;
   email: string;
