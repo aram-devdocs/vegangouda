@@ -1,4 +1,4 @@
-import { ButtonBase, ButtonBaseProps, SvgIconComponent } from '@vegangouda/design-system'
+import { ButtonBase, ButtonBaseProps, SvgIconComponent } from '@vegangouda/web/design-system'
 
 interface PaginationArrowProps extends ButtonBaseProps {
   icon: SvgIconComponent

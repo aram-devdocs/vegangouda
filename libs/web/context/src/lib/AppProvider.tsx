@@ -1,4 +1,5 @@
 import React, { createContext, useState } from 'react';
+import { FuncProviderProps } from './types';
 
 interface AppContextProps {
   count: number;
@@ -12,11 +13,7 @@ export const AppContext = createContext<AppContextProps>({
   },
 });
 
-interface AppProviderProps {
-  children: React.ReactNode;
-}
-
-export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
+export const AppProvider: React.FC<FuncProviderProps> = ({ children }) => {
   const [count, setCount] = useState(0);
 
   const incrementCount = () => {

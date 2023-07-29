@@ -1,4 +1,4 @@
-import { CircularProgress, Dialog, DialogContent, Typography } from '@vegangouda/design-system'
+import { CircularProgress, Dialog, DialogContent, Typography } from '@vegangouda/web/design-system'
 
 export interface LoadingDialogProps {
   message: string

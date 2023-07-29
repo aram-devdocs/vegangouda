@@ -5,7 +5,7 @@ import {
   MoreHorizontalIcon,
   Tooltip,
   Typography,
-} from '@vegangouda/design-system'
+} from '@vegangouda/web/design-system'
 
 interface PaginationItemProps extends ButtonBaseProps {
   pageNumber: number

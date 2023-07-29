@@ -15,8 +15,12 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@vegangouda/design-system": ["libs/web/design-system/src/index.ts"],
-      "@vegangouda/context": ["libs/web/context/src/index.ts"]
+      "@vegangouda/web/context": ["libs/web/context/src/index.ts"],
+      "@vegangouda/web/design-system": ["libs/web/design-system/src/index.ts"],
+      "@vegangouda/web/feature-auth": ["libs/web/feature-auth/src/index.ts"],
+      "@vegangouda/shared/utils-validation": [
+        "libs/shared/utils-validation/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

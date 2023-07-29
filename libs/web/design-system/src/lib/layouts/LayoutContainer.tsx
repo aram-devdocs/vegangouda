@@ -1,4 +1,4 @@
-import { useMediaQuery } from '@vegangouda/design-system'
+// import { useMediaQuery } from '@vegangouda/web/design-system'
 import { Box } from '../core/Box/Box'
 import { Stack, StackProps } from '../core/Stack/Stack'
 
@@ -11,7 +11,7 @@ export function LayoutContainer({
   disableMaxWidth,
   ...stackProps
 }: LayoutContainerProps) {
-  const isPrint = useMediaQuery('print')
+  const isPrint = false // TODO useMediaQuery('print')
   return (
     <Stack direction="row" justifyContent="center" {...stackProps}>
       <Box

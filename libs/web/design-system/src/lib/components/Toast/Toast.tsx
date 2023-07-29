@@ -1,36 +1,34 @@
-import { useToast } from '../../context/ToastProvider'
-import { useEffect, useState } from 'react'
-import { Snackbar } from '../../core/Snackbar/Snackbar'
-import { Alert } from '../../core/Alert/Alert'
-import { useIntercom } from 'react-use-intercom'
-
+import { useEffect, useState } from 'react';
+import { Snackbar } from '../../core/Snackbar/Snackbar';
+import { Alert } from '../../core/Alert/Alert';
+import { useToast } from '@vegangouda/web/context';
 export function Toast() {
-  const { toast } = useToast()
-  const { update: updateIntercom} = useIntercom()
-  const [open, setOpen] = useState(false)
-  const [hovered, setHovered] = useState(false)
+  const { toast } = useToast();
+  const [open, setOpen] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    if (toast){  
-      updateIntercom({ hideDefaultLauncher: true })   
-      setOpen(true)
+    if (toast) {
+      setOpen(true);
     }
     return () => {
-      setHovered(false)
-    }
-  }, [toast])
+      setHovered(false);
+    };
+  }, [toast]);
 
-  const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
+  const handleClose = (
+    _event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === 'clickaway') {
-      return
+      return;
     }
-    setOpen(false)
-    updateIntercom({ hideDefaultLauncher: false })
-  }
+    setOpen(false);
+  };
 
   const handleMouseEnter = () => {
-    setHovered(true)
-  }
+    setHovered(true);
+  };
 
   return (
     <Snackbar
@@ -48,9 +46,13 @@ export function Toast() {
         '.MuiAlert-root': { paddingX: 3, paddingY: 2 },
       }}
     >
-      <Alert severity={toast?.type ?? 'info'} onClose={handleClose} action={toast?.action}>
+      <Alert
+        severity={toast?.type ?? 'info'}
+        onClose={handleClose}
+        action={toast?.action}
+      >
         {toast?.message}
       </Alert>
     </Snackbar>
-  )
+  );
 }

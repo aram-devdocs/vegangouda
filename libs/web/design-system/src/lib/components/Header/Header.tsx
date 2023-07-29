@@ -1,7 +1,7 @@
 import { AppBar } from '../../core/AppBar/AppBar'
 import { Toolbar } from '../../core/Toolbar/Toolbar'
 import React from 'react'
-import { useMediaQuery } from '@vegangouda/design-system'
+import { useMediaQuery } from '@vegangouda/web/design-system'
 
 export interface HeaderProps {
   /** components placed on the bar  */

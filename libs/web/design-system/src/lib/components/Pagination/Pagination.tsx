@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, ArrowRightIcon, Button, Stack, Tooltip } from '@vegangouda/design-system'
+import { ArrowLeftIcon, ArrowRightIcon, Button, Stack, Tooltip } from '@vegangouda/web/design-system'
 import { PaginationItem } from './PaginationItem'
 
 export type PaginationProps = {

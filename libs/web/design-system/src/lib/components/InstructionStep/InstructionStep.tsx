@@ -1,4 +1,4 @@
-import { Card, Typography, CardContent, Stack } from '@vegangouda/design-system'
+import { Card, Typography, CardContent, Stack } from '@vegangouda/web/design-system'
 
 export interface InstructionStepProps {
   image: string

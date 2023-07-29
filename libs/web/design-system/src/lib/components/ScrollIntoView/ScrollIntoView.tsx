@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@vegangouda/design-system'
+import { Box, BoxProps } from '@vegangouda/web/design-system'
 import { useLayoutEffect, useState } from 'react'
 
 export interface ScrollIntoViewProps extends BoxProps, ScrollIntoViewOptions {
