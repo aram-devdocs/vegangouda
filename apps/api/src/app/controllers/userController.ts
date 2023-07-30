@@ -8,7 +8,7 @@ import {
   DeleteUserTypeInput,
   LoginWithEmailInput,
   MeInput,
-} from '../types/userType';
+} from '@vegangouda/shared/types'
 
 export async function me(request: FastifyRequest, reply: FastifyReply) {
   try {

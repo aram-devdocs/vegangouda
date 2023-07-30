@@ -25,7 +25,7 @@ import {
   LoginWithEmailInput,
   MeInput,
   //   LoginWithMobileInput,
-} from '../types/userType';
+} from '@vegangouda/shared/types'
 
 import jwt from 'jsonwebtoken';
 const saltKey = process.env.SALT_KEY;

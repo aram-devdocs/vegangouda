@@ -11,7 +11,7 @@ import {
   DeleteUserTypeInput,
   DeleteUserTypeOutput,
   GetUserTypeWithPasswordOutput,
-} from '../types/userType';
+} from '@vegangouda/shared/types'
 
 export const User = {
   async findByUserId({ userId }: GetUserTypeInput) {

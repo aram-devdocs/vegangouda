@@ -1,1 +1,1 @@
-export * from './lib/components/NavBar';
+export * from './lib/components/LayoutWrapper';

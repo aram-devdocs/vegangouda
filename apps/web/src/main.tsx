@@ -6,8 +6,7 @@ import {
   AuthProvider,
   ToastProvider,
 } from '@vegangouda/web/design-system';
-import axios from 'axios';
-
+import { LayoutWrapper } from '@vegangouda/web/feature-nav';
 import App from './app/app';
 
 const root = ReactDOM.createRoot(
@@ -19,9 +18,11 @@ root.render(
     <BrowserRouter>
       <AuthProvider>
         <AppProvider>
-          <ToastProvider>
-            <App />
-          </ToastProvider>
+          <LayoutWrapper>
+            <ToastProvider>
+              <App />
+            </ToastProvider>
+          </LayoutWrapper>
         </AppProvider>
       </AuthProvider>
     </BrowserRouter>

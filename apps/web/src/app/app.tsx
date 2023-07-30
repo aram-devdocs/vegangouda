@@ -1,13 +1,11 @@
 import { Toast, RequireAuth } from '@vegangouda/web/design-system';
 import { Route, Routes } from 'react-router-dom';
 import { LoginPage } from '@vegangouda/web/feature-auth';
-import { NavBar } from '@vegangouda/web/feature-nav';
 // import { WebDesignSystem } from '@vegangouda/web/design-system';
 
 export function App() {
   return (
     <>
-      <NavBar />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
