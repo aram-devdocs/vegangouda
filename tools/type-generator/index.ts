@@ -1,36 +1,22 @@
-// Tode: take in the schema from apps/api/src/app/schemas/*, and generate the types to libs/shared/types/src/lib. Use the files that currently exist at apps/api/src/app/schemas/userSchema.ts as a guide.
+import { convertFromDirectory } from 'joi-to-typescript';
+import { settings } from './constants';
 
-import fs from 'fs';
-import path from 'path';
-import { convertJoiSchemaToType } from './convertJoiSchemaToType';
+async function types(): Promise<void> {
+  // eslint-disable-next-line no-console
+  console.log('Running joi-to-typescript...');
 
-const schemasPath = path.join(__dirname, '../../apps/api/src/app/schemas');
+  // Configure your settings here
+  const result = await convertFromDirectory(settings);
 
-const schemaFiles = fs.readdirSync(schemasPath);
+  console.log('Result:', result);
 
-const schemaNames = schemaFiles.map((file) => {
-  return file.split('.')[0];
-});
+  if (result) {
+    // eslint-disable-next-line no-console
+    console.log('Completed joi-to-typescript');
+  } else {
+    // eslint-disable-next-line no-console
+    console.log('Failed to run joi-to-typescrip');
+  }
+}
 
-const typesPath = path.join(__dirname, '../../libs/shared/types/src/lib');
-
-const typesFiles = fs.readdirSync(typesPath);
-
-const typesNames = typesFiles.map((file) => {
-  return file.split('.')[0];
-});
-
-const typesToGenerate = schemaNames.filter((schemaName) => {
-  return !typesNames.includes(schemaName);
-});
-
-typesToGenerate.forEach((schemaName) => {
-  const schema = require(`../../apps/api/src/app/schemas/${schemaName}.ts`);
-  const type = convertJoiSchemaToType(schema[schemaName]);
-  fs.writeFileSync(
-    path.join(__dirname, `../../libs/shared/types/src/lib/${schemaName}.ts`),
-    type
-  );
-});
-
-console.log(typesToGenerate);
+types();

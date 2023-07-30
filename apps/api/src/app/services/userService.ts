@@ -12,20 +12,17 @@ import {
   //   mobileLoginSchema,
 } from '../schemas/userSchema';
 import {
-  CreateUserTypeInput,
-  CreateUserTypeOutput,
-  GetUserTypeInput,
-  GetUserTypeByEmailInput,
-  GetUserTypeOutput,
-  UpdateUserTypeInput,
-  UpdateUserTypeOutput,
-  DeleteUserTypeInput,
-  DeleteUserTypeOutput,
-  LoginOutput,
-  LoginWithEmailInput,
+  EmailLogin,
   MeInput,
+  TokenReturn,
+  UserCreate,
+  UserDelete,
+  UserGet,
+  UserGetByEmail,
+  UserProtected,
+  UserUpdate,
   //   LoginWithMobileInput,
-} from '@vegangouda/shared/types'
+} from '@vegangouda/shared/types';
 
 import jwt from 'jsonwebtoken';
 const saltKey = process.env.SALT_KEY;
@@ -68,10 +65,10 @@ export const UserService = {
 
     // remove password
 
-    return { token: newToken } as LoginOutput;
+    return { token: newToken } as TokenReturn;
   },
 
-  async create(input: CreateUserTypeInput) {
+  async create(input: UserCreate) {
     const validInput = await userCreateSchema.validateAsync(input);
 
     if (!validInput) {
@@ -111,10 +108,10 @@ export const UserService = {
       password: hashedPassword,
     });
 
-    return user as CreateUserTypeOutput;
+    return user as UserProtected;
   },
 
-  async update(input: UpdateUserTypeInput) {
+  async update(input: UserUpdate) {
     const validInput = await userUpdateSchema.validateAsync(input);
 
     if (!validInput) {
@@ -140,10 +137,10 @@ export const UserService = {
       password: hashedPassword,
     });
 
-    return user as UpdateUserTypeOutput;
+    return user as UserProtected;
   },
 
-  async loginWithEmail(input: LoginWithEmailInput) {
+  async loginWithEmail(input: EmailLogin) {
     console.log('input', input);
     const validInput = await emailLoginSchema.validateAsync(input);
 
@@ -187,28 +184,28 @@ export const UserService = {
     // remove password
     delete user.password;
 
-    return { ...user, token } as LoginOutput;
+    return { ...user, token } as UserProtected & TokenReturn;
   },
 
   // TODO: Set up mobile code relationship
   //   async loginWithMobile(input: LoginWithMobileInput) {
   //   },
 
-  async findByUserId({ userId }: GetUserTypeInput) {
+  async findByUserId({ userId }: UserGet) {
     const user = await User.findByUserId({ userId });
 
-    return user as GetUserTypeOutput;
+    return user as UserProtected;
   },
 
-  async findByEmail({ email }: GetUserTypeByEmailInput) {
+  async findByEmail({ email }: UserGetByEmail) {
     const user = await User.findByEmail({ email });
 
-    return user as GetUserTypeOutput;
+    return user as UserProtected;
   },
 
-  async delete({ userId }: DeleteUserTypeInput) {
+  async delete({ userId }: UserDelete) {
     const user = await User.delete({ userId });
 
-    return user as DeleteUserTypeOutput;
+    return user as UserProtected;
   },
 };

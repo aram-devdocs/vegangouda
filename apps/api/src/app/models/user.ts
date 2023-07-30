@@ -1,20 +1,17 @@
 import { query } from '../utils/query';
 import {
-  CreateUserTypeInput,
-  CreateUserTypeOutput,
-  GetUserTypeInput,
-  GetUserTypeByEmailInput,
-  GetUserTypeByMobileInput,
-  GetUserTypeOutput,
-  UpdateUserTypeInput,
-  UpdateUserTypeOutput,
-  DeleteUserTypeInput,
-  DeleteUserTypeOutput,
-  GetUserTypeWithPasswordOutput,
-} from '@vegangouda/shared/types'
+  UserCreate,
+  UserDelete,
+  UserGet,
+  UserGetByEmail,
+  UserGetByMobile,
+  UserProtected,
+  UserUnprotected,
+  UserUpdate,
+} from '@vegangouda/shared/types';
 
 export const User = {
-  async findByUserId({ userId }: GetUserTypeInput) {
+  async findByUserId({ userId }: UserGet) {
     const res = await query({
       text: `SELECT * FROM users WHERE userId = $1`,
       values: [userId],
@@ -23,27 +20,27 @@ export const User = {
     if (!res.rows[0]) {
       throw new Error(`User with userId: ${userId} not found`);
     }
-    return res.rows[0] as GetUserTypeOutput;
+    return res.rows[0] as UserProtected;
   },
-  async findByEmail({ email }: GetUserTypeByEmailInput) {
+  async findByEmail({ email }: UserGetByEmail) {
     const res = await query({
       text: `SELECT * FROM users WHERE email = $1`,
       values: [email],
     });
 
-    return res.rows[0] as GetUserTypeOutput | null;
+    return res.rows[0] as UserProtected | null;
   },
 
-  async findByMobile({ mobile }: GetUserTypeByMobileInput) {
+  async findByMobile({ mobile }: UserGetByMobile) {
     const res = await query({
       text: `SELECT * FROM users WHERE mobile = $1`,
       values: [mobile],
     });
 
-    return res.rows[0] as GetUserTypeOutput | null;
+    return res.rows[0] as UserProtected | null;
   },
 
-  async findByEmailWithPassword({ email }: GetUserTypeByEmailInput) {
+  async findByEmailWithPassword({ email }: UserGetByEmail) {
     const res = await query({
       text: `SELECT * FROM users WHERE email = $1`,
       values: [email],
@@ -53,16 +50,10 @@ export const User = {
       throw new Error(`User with email: ${email} not found`);
     }
 
-    return res.rows[0] as GetUserTypeWithPasswordOutput;
+    return res.rows[0] as UserUnprotected;
   },
 
-  async create({
-    email,
-    password,
-    firstName,
-    lastName,
-    mobile,
-  }: CreateUserTypeInput) {
+  async create({ email, password, firstName, lastName, mobile }: UserCreate) {
     const res = await query({
       text: `INSERT INTO users (email, password, firstName, lastName, mobile) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
       values: [email, password, firstName, lastName, mobile],
@@ -72,7 +63,7 @@ export const User = {
       throw new Error(`User not created`);
     }
 
-    return res.rows[0] as CreateUserTypeOutput;
+    return res.rows[0] as UserProtected;
   },
 
   async update({
@@ -82,7 +73,7 @@ export const User = {
     firstName,
     lastName,
     mobile,
-  }: UpdateUserTypeInput) {
+  }: UserUpdate) {
     const res = await query({
       text: `UPDATE users SET email = $1, password = $2, firstName = $3, lastName = $4, mobile = $5 WHERE userId = $6 RETURNING *`,
       values: [email, password, firstName, lastName, mobile, userId],
@@ -92,12 +83,13 @@ export const User = {
       throw new Error(`User not updated`);
     }
 
-    return res.rows[0] as UpdateUserTypeOutput;
+    return res.rows[0] as UserProtected;
   },
 
-  async delete({ userId }: DeleteUserTypeInput) {
+  async delete({ userId }: UserDelete) {
+    // CODEBASE RULE: Archived is a soft delete
     const res = await query({
-      text: `DELETE FROM users WHERE userId = $1 RETURNING *`,
+      text: `UPDATE users SET archived = true WHERE userId = $1 RETURNING *`,
       values: [userId],
     });
 
@@ -105,6 +97,6 @@ export const User = {
       throw new Error(`User not deleted`);
     }
 
-    return res.rows[0] as DeleteUserTypeOutput;
+    return res.rows[0] as UserProtected;
   },
 };

@@ -1,14 +1,14 @@
 import { UserService } from '../services/userService';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import {
-  CreateUserTypeInput,
-  GetUserTypeInput,
-  GetUserTypeByEmailInput,
-  UpdateUserTypeInput,
-  DeleteUserTypeInput,
-  LoginWithEmailInput,
+  UserCreate,
+  UserUpdate,
+  UserDelete,
+  UserGet,
   MeInput,
-} from '@vegangouda/shared/types'
+  UserGetByEmail,
+  EmailLogin,
+} from '@vegangouda/shared/types';
 
 export async function me(request: FastifyRequest, reply: FastifyReply) {
   try {
@@ -22,7 +22,7 @@ export async function me(request: FastifyRequest, reply: FastifyReply) {
 
 export async function createUser(request: FastifyRequest, reply: FastifyReply) {
   try {
-    const input = request.body as CreateUserTypeInput;
+    const input = request.body as UserCreate;
     const user = await UserService.create(input);
     reply.send(user);
   } catch (error) {
@@ -32,7 +32,7 @@ export async function createUser(request: FastifyRequest, reply: FastifyReply) {
 
 export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
   try {
-    const input = request.body as UpdateUserTypeInput;
+    const input = request.body as UserUpdate;
     const user = await UserService.update(input);
     reply.send(user);
   } catch (error) {
@@ -42,7 +42,7 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
 
 export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
   try {
-    const input = request.body as DeleteUserTypeInput;
+    const input = request.body as UserDelete;
     const user = await UserService.delete(input);
     reply.send(user);
   } catch (error) {
@@ -55,7 +55,7 @@ export async function getUserById(
   reply: FastifyReply
 ) {
   try {
-    const input = request.body as GetUserTypeInput;
+    const input = request.body as UserGet;
     const user = await UserService.findByUserId(input);
     reply.send(user);
   } catch (error) {
@@ -68,7 +68,7 @@ export async function getUserByEmail(
   reply: FastifyReply
 ) {
   try {
-    const input = request.body as GetUserTypeByEmailInput;
+    const input = request.body as UserGetByEmail;
     const user = await UserService.findByEmail(input);
     reply.send(user);
   } catch (error) {
@@ -81,7 +81,7 @@ export async function loginWithEmail(
   reply: FastifyReply
 ) {
   try {
-    const input = request.body as LoginWithEmailInput;
+    const input = request.body as EmailLogin;
     const user = await UserService.loginWithEmail(input);
     reply.send(user);
   } catch (error) {

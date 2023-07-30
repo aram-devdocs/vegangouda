@@ -1,1 +1,1 @@
-export * from './lib/userType';
+export * from './generated';
