@@ -31,6 +31,7 @@ export * from './lib/components/Toast/Toast';
 export * from './lib/components/UploadImageField/UploadImageField';
 export * from './lib/components/Pagination/Pagination';
 export * from './lib/components/AnimatedTypography/AnimatedTypography';
+export * from './lib/components/Form/Form';
 
 // Core
 export * from './lib/core/IconButton/IconButton';
