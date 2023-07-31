@@ -15,7 +15,7 @@ export const settings: Settings = {
   flattenTree: false,
   rootDirectoryOnly: false,
   indexAllToRoot: true,
-  commentEverything: true,
+  commentEverything: false,
   ignoreFiles: [],
   indentationChacters: '  ',
   treatDefaultedOptionalAsRequired: false,
