@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { auth } from '../middleware/auth';
+import { UserRoles } from '@vegangouda/shared/types';
+import { useMiddleware } from '../middleware/auth';
 
 import {
   createUser,
@@ -10,12 +11,12 @@ import {
   loginWithEmail,
   me,
 } from '../controllers/userController';
+const auth = useMiddleware({});
 
 export default async function (fastify: FastifyInstance) {
   // public routes
   fastify.post('/user/create', createUser);
   fastify.post('/user/loginWithEmail', loginWithEmail);
-
   // private routes
   fastify.post('/user/me', { preHandler: auth }, me);
   fastify.post('/user/update', { preHandler: auth }, updateUser);

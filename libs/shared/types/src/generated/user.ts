@@ -53,6 +53,7 @@ export interface UserLogin {
   lastName: string;
   mobile: string;
   password?: undefined;
+  role: 'ADMIN' | 'FREE' | 'PAID';
   token: string;
   updatedAt: Date;
   updatedBy: string;
@@ -70,6 +71,7 @@ export interface UserProtected {
   lastName: string;
   mobile: string;
   password?: undefined;
+  role: 'ADMIN' | 'FREE' | 'PAID';
   updatedAt: Date;
   updatedBy: string;
   user_id: string;
@@ -86,6 +88,7 @@ export interface UserUnprotected {
   lastName: string;
   mobile: string;
   password: string;
+  role: 'ADMIN' | 'FREE' | 'PAID';
   updatedAt: Date;
   updatedBy: string;
   user_id: string;

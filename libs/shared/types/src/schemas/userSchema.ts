@@ -1,7 +1,6 @@
 import Joi from 'joi';
 import { User } from '../constants';
 
-
 export const userUnprotectedSchema = Joi.object(User)
   .meta({ className: 'UserUnprotected' })
   .label('UserUnprotected');

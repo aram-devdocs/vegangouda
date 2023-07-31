@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { UserRoles } from './enums';
 
 export const email = Joi.string().email({ tlds: false }).required();
 export const firstName = Joi.string().min(1).max(255).required();
@@ -16,6 +17,9 @@ export const password = Joi.string()
     'string.pattern.base':
       'Password must contain at least one lowercase letter, one uppercase letter, one number and one special character',
   })
+  .required();
+const role = Joi.string()
+  .valid(...Object.values(UserRoles))
   .required();
 
 export const archived = Joi.boolean().required();
@@ -37,5 +41,6 @@ export const User = {
   mobile,
   password,
   archived,
+  role,
   ...Trackable,
 };
