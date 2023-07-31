@@ -7,11 +7,9 @@ import {
   Radio,
   Checkbox,
 } from '../../../';
-import { useState } from 'react';
 import { joiResolver } from '@hookform/resolvers/joi';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import Joi from 'joi';
-import { on } from 'events';
 
 interface InputLine {
   label: string;
@@ -37,9 +35,12 @@ interface FormProps {
   schema: Joi.ObjectSchema<any>;
   defaultValues: object;
   questions: InputLine[];
-  onSubmit: () => void;
-  //   onSubmit: (data: any) => void;
+  onSubmit: (data: any) => void;
 }
+
+const controllerGlobalSx = {
+  // global styles for all rendered inputs
+};
 
 export const Form = ({
   schema,
@@ -60,7 +61,7 @@ export const Form = ({
 
   const onSubmitLocal: SubmitHandler<DefaultValues> = (data) => {
     console.log(data);
-    onSubmit();
+    onSubmit(data);
   };
 
   const getComponent = (question: InputLine) => {
@@ -85,6 +86,9 @@ export const Form = ({
                 fullWidth
                 label={question.label}
                 variant="outlined"
+                sx={{
+                  ...controllerGlobalSx,
+                }}
               />
             )}
           />
@@ -109,6 +113,9 @@ export const Form = ({
                 fullWidth
                 label={question.label}
                 variant="outlined"
+                sx={{
+                  ...controllerGlobalSx,
+                }}
               />
             )}
           />
@@ -133,6 +140,9 @@ export const Form = ({
                 fullWidth
                 label={question.label}
                 variant="outlined"
+                sx={{
+                  ...controllerGlobalSx,
+                }}
               />
             )}
           />
@@ -157,6 +167,9 @@ export const Form = ({
                 fullWidth
                 label={question.label}
                 variant="outlined"
+                sx={{
+                  ...controllerGlobalSx,
+                }}
               />
             )}
           />
@@ -181,6 +194,9 @@ export const Form = ({
                 fullWidth
                 label={question.label}
                 variant="outlined"
+                sx={{
+                  ...controllerGlobalSx,
+                }}
               />
             )}
           />
@@ -205,6 +221,9 @@ export const Form = ({
                 fullWidth
                 label={question.label}
                 variant="outlined"
+                sx={{
+                  ...controllerGlobalSx,
+                }}
               />
             )}
           />
@@ -229,6 +248,9 @@ export const Form = ({
                 fullWidth
                 label={question.label}
                 variant="outlined"
+                sx={{
+                  ...controllerGlobalSx,
+                }}
               />
             )}
           />
@@ -254,6 +276,9 @@ export const Form = ({
                 fullWidth
                 label={question.label}
                 variant="outlined"
+                sx={{
+                  ...controllerGlobalSx,
+                }}
               />
             )}
           />
@@ -280,6 +305,9 @@ export const Form = ({
                   label={question.label}
                   variant="outlined"
                   select
+                  sx={{
+                    ...controllerGlobalSx,
+                  }}
                 >
                   {question.options?.map((option) => (
                     <MenuItem key={option} value={option}>
@@ -359,6 +387,9 @@ export const Form = ({
                 fullWidth
                 label={question.label}
                 variant="outlined"
+                sx={{
+                  ...controllerGlobalSx,
+                }}
               />
             )}
           />
