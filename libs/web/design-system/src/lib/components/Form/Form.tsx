@@ -399,9 +399,23 @@ export const Form = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmitLocal)}>
-      <Stack spacing={2}>
+      <Stack
+        spacing={2}
+        sx={{
+          width: '100%',
+          margin: 'auto',
+          alignItems: 'center',
+        }}
+      >
         {questions.map((question) => getComponent(question))}
-        <Button type="submit" variant="contained" label="Register" />
+        <Button
+          type="submit"
+          variant="contained"
+          label="Register"
+          sx={{
+            width: '60%',
+          }}
+        />
       </Stack>
     </form>
   );

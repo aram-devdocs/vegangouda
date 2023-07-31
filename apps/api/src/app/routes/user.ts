@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify';
+import { auth } from '../middleware/auth';
 
 import {
   createUser,
@@ -9,13 +10,16 @@ import {
   loginWithEmail,
   me,
 } from '../controllers/userController';
+
 export default async function (fastify: FastifyInstance) {
-  fastify.post('/user/me', me);
+  // public routes
   fastify.post('/user/create', createUser);
-  //   TODO: Add middleware to check if user is logged in
-  fastify.post('/user/update', updateUser);
-  fastify.post('/user/delete', deleteUser);
-  fastify.post('/user/getUserById', getUserById);
-  fastify.post('/user/getUserByEmail', getUserByEmail);
   fastify.post('/user/loginWithEmail', loginWithEmail);
+
+  // private routes
+  fastify.post('/user/me', { preHandler: auth }, me);
+  fastify.post('/user/update', { preHandler: auth }, updateUser);
+  fastify.post('/user/delete', { preHandler: auth }, deleteUser);
+  fastify.post('/user/getUserById', { preHandler: auth }, getUserById);
+  fastify.post('/user/getUserByEmail', { preHandler: auth }, getUserByEmail);
 }

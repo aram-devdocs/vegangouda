@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const validateToken = async (token: string) => {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     try {
       // post /user/me to get fresh token
       const response = await axios.post('/user/me', { token });

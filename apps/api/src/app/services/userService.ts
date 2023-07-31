@@ -25,20 +25,18 @@ import {
 } from '@vegangouda/shared/types';
 
 import jwt from 'jsonwebtoken';
-const saltKey = process.env.SALT_KEY;
+const jwtSecret = process.env.JWT_SECRET;
 export const UserService = {
   async me(input: MeInput) {
     // see if input.token has a valid jwt that is both valid and not expired, if so return a fresh token
 
     const { token } = input;
 
-    const decoded = jwt.verify(token, saltKey);
+    const decoded = jwt.verify(token, jwtSecret);
 
     if (!decoded) {
       throw new Error('Invalid token');
     }
-    console.log('are we here');
-    console.log(decoded);
     const { email } = decoded as any;
 
     const user = await User.findByEmail({ email });
@@ -57,7 +55,7 @@ export const UserService = {
         mobile: user.mobile,
       },
 
-      saltKey,
+      jwtSecret,
       {
         expiresIn: '1d',
       }
@@ -101,7 +99,7 @@ export const UserService = {
       throw new Error('Invalid password');
     }
 
-    const hashedPassword = await bcrypt.hash(password, Number(saltKey));
+    const hashedPassword = await bcrypt.hash(password, Number(jwtSecret));
 
     const user = await User.create({
       ...input,
@@ -130,7 +128,7 @@ export const UserService = {
       throw new Error('Invalid password');
     }
 
-    const hashedPassword = await bcrypt.hash(password, saltKey);
+    const hashedPassword = await bcrypt.hash(password, jwtSecret);
 
     const user = await User.update({
       ...input,
@@ -175,7 +173,7 @@ export const UserService = {
         lastName: user.lastName,
         mobile: user.mobile,
       },
-      saltKey,
+      jwtSecret,
       {
         expiresIn: '1d',
       }
