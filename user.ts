@@ -21,7 +21,7 @@ export interface user {
   lastName: string;
   mobile: string;
   updatedAt: Date;
-  userId: string;
+  user_id: string;
 }
 
 export interface userCreate {

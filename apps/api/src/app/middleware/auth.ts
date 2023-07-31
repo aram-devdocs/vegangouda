@@ -15,11 +15,12 @@ export const auth = async (
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!decoded) {
+    console.log(decoded);
+    if (!decoded || !decoded?.user_id) {
       throw new Error('Invalid token');
     }
 
-    console.log('middleware', token);
+    reply.send({ user_id: decoded?.user_id });
 
     done();
   } catch (error) {

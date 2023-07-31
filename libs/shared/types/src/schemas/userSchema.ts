@@ -24,7 +24,7 @@ export const userCreateSchema = Joi.object({
   .label('UserCreate');
 
 export const userUpdateSchema = Joi.object({
-  userId: User.userId,
+  user_id: User.user_id,
   email: User.email,
   firstName: User.firstName,
   lastName: User.lastName,
@@ -35,13 +35,13 @@ export const userUpdateSchema = Joi.object({
   .label('UserUpdate');
 
 export const userDeleteSchema = Joi.object({
-  userId: User.userId,
+  user_id: User.user_id,
 })
   .meta({ className: 'UserDelete' })
   .label('UserDelete');
 
 export const userGetSchema = Joi.object({
-  userId: User.userId,
+  user_id: User.user_id,
 })
   .meta({ className: 'UserGet' })
   .label('UserGet');

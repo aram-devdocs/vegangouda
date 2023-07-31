@@ -27,11 +27,11 @@ export interface UserCreate {
 }
 
 export interface UserDelete {
-  userId: string;
+  user_id: string;
 }
 
 export interface UserGet {
-  userId: string;
+  user_id: string;
 }
 
 export interface UserGetByEmail {
@@ -56,7 +56,7 @@ export interface UserLogin {
   token: string;
   updatedAt: Date;
   updatedBy: string;
-  userId: string;
+  user_id: string;
 }
 
 export interface UserProtected {
@@ -72,7 +72,7 @@ export interface UserProtected {
   password?: undefined;
   updatedAt: Date;
   updatedBy: string;
-  userId: string;
+  user_id: string;
 }
 
 export interface UserUnprotected {
@@ -88,7 +88,7 @@ export interface UserUnprotected {
   password: string;
   updatedAt: Date;
   updatedBy: string;
-  userId: string;
+  user_id: string;
 }
 
 export interface UserUpdate {
@@ -97,5 +97,5 @@ export interface UserUpdate {
   lastName: string;
   mobile: string;
   password: string;
-  userId: string;
+  user_id: string;
 }

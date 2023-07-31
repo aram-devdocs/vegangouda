@@ -32,7 +32,7 @@ export const createTables = async () => {
 
   const usersTable = await query({
     text: `CREATE TABLE IF NOT EXISTS users (
-            userId uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+            user_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
           email varchar(255) UNIQUE NOT NULL,
           password varchar(255) NOT NULL,
           firstName varchar(255) NOT NULL,
@@ -48,11 +48,11 @@ export const createTables = async () => {
   const twoFactorAuthTable = await query({
     text: `CREATE TABLE IF NOT EXISTS twoFactorAuth (
           twoFactorAuthId uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-          userId uuid NOT NULL,
+          user_id uuid NOT NULL,
           secret varchar(255) NOT NULL,
           createdAt timestamp NOT NULL DEFAULT NOW(),
           updatedAt timestamp NOT NULL DEFAULT NOW(),
-          FOREIGN KEY (userId) REFERENCES users(userId)
+          FOREIGN KEY (user_id) REFERENCES users(user_id)
         )`,
     values: [],
   });

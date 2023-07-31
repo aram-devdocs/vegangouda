@@ -11,14 +11,14 @@ import {
 } from '@vegangouda/shared/types';
 
 export const User = {
-  async findByUserId({ userId }: UserGet) {
+  async findByUserId({ user_id }: UserGet) {
     const res = await query({
-      text: `SELECT * FROM users WHERE userId = $1`,
-      values: [userId],
+      text: `SELECT * FROM users WHERE user_id = $1`,
+      values: [user_id],
     });
 
     if (!res.rows[0]) {
-      throw new Error(`User with userId: ${userId} not found`);
+      throw new Error(`User with user_id: ${user_id} not found`);
     }
     return res.rows[0] as UserProtected;
   },
@@ -50,6 +50,7 @@ export const User = {
       throw new Error(`User with email: ${email} not found`);
     }
 
+    console.log('res.rows[0]', res.rows[0].user_id);
     return res.rows[0] as UserUnprotected;
   },
 
@@ -67,7 +68,7 @@ export const User = {
   },
 
   async update({
-    userId,
+    user_id,
     email,
     password,
     firstName,
@@ -75,8 +76,8 @@ export const User = {
     mobile,
   }: UserUpdate) {
     const res = await query({
-      text: `UPDATE users SET email = $1, password = $2, firstName = $3, lastName = $4, mobile = $5 WHERE userId = $6 RETURNING *`,
-      values: [email, password, firstName, lastName, mobile, userId],
+      text: `UPDATE users SET email = $1, password = $2, firstName = $3, lastName = $4, mobile = $5 WHERE user_id = $6 RETURNING *`,
+      values: [email, password, firstName, lastName, mobile, user_id],
     });
 
     if (!res.rows[0]) {
@@ -86,11 +87,11 @@ export const User = {
     return res.rows[0] as UserProtected;
   },
 
-  async delete({ userId }: UserDelete) {
+  async delete({ user_id }: UserDelete) {
     // CODEBASE RULE: Archived is a soft delete
     const res = await query({
-      text: `UPDATE users SET archived = true WHERE userId = $1 RETURNING *`,
-      values: [userId],
+      text: `UPDATE users SET archived = true WHERE user_id = $1 RETURNING *`,
+      values: [user_id],
     });
 
     if (!res.rows[0]) {

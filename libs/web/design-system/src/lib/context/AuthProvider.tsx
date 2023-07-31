@@ -22,8 +22,7 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     try {
       // post /user/me to get fresh token
-      const response = await axios.post('/user/me', { token });
-      localStorage.setItem('access_token', response.data.token);
+      await axios.post('/user/me', { token });
       setIsAuthenticated(true);
     } catch (error) {
       console.log(error);

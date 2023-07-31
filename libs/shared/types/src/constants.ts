@@ -30,7 +30,7 @@ export const Trackable = {
 };
 
 export const User = {
-  userId: Joi.string().uuid().required(),
+  user_id: Joi.string().uuid().required(),
   email,
   firstName,
   lastName,

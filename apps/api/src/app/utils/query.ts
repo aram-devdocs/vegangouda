@@ -21,6 +21,7 @@ type QueryConfig = {
 
 export const query = async (queryConfig: QueryConfig) => {
   const { text, values } = queryConfig;
+
   const res = await db.query(text, values).catch((err) => {
     console.log(err);
     throw new Error(err);

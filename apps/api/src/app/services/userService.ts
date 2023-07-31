@@ -37,7 +37,7 @@ export const UserService = {
     if (!decoded) {
       throw new Error('Invalid token');
     }
-    const { email } = decoded as any;
+    const { email } = decoded as { email: string };
 
     const user = await User.findByEmail({ email });
 
@@ -45,25 +45,7 @@ export const UserService = {
       throw new Error('User not found');
     }
 
-    // generate jwt
-    const newToken = jwt.sign(
-      {
-        userId: user.userId,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        mobile: user.mobile,
-      },
-
-      jwtSecret,
-      {
-        expiresIn: '1d',
-      }
-    );
-
-    // remove password
-
-    return { token: newToken } as TokenReturn;
+    return { token } as TokenReturn;
   },
 
   async create(input: UserCreate) {
@@ -164,10 +146,11 @@ export const UserService = {
       throw new Error('Invalid password');
     }
 
+    console.log('user', user);
     // generate jwt
     const token = jwt.sign(
       {
-        userId: user.userId,
+        user_id: user.user_id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -189,8 +172,8 @@ export const UserService = {
   //   async loginWithMobile(input: LoginWithMobileInput) {
   //   },
 
-  async findByUserId({ userId }: UserGet) {
-    const user = await User.findByUserId({ userId });
+  async findByUserId({ user_id }: UserGet) {
+    const user = await User.findByUserId({ user_id });
 
     return user as UserProtected;
   },
@@ -201,8 +184,8 @@ export const UserService = {
     return user as UserProtected;
   },
 
-  async delete({ userId }: UserDelete) {
-    const user = await User.delete({ userId });
+  async delete({ user_id }: UserDelete) {
+    const user = await User.delete({ user_id });
 
     return user as UserProtected;
   },
