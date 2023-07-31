@@ -10,7 +10,7 @@ import {
   userUpdateSchema,
   emailLoginSchema,
   //   mobileLoginSchema,
-} from '../schemas/userSchema';
+} from '@vegangouda/shared/types';
 import {
   EmailLogin,
   MeInput,

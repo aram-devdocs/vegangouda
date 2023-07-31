@@ -44,7 +44,10 @@ export interface UserGetByMobile {
 
 export interface UserLogin {
   archived: boolean;
+  archivedAt: Date;
+  archivedBy: string;
   createdAt: Date;
+  createdBy: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -52,30 +55,39 @@ export interface UserLogin {
   password?: undefined;
   token: string;
   updatedAt: Date;
+  updatedBy: string;
   userId: string;
 }
 
 export interface UserProtected {
   archived: boolean;
+  archivedAt: Date;
+  archivedBy: string;
   createdAt: Date;
+  createdBy: string;
   email: string;
   firstName: string;
   lastName: string;
   mobile: string;
   password?: undefined;
   updatedAt: Date;
+  updatedBy: string;
   userId: string;
 }
 
 export interface UserUnprotected {
   archived: boolean;
+  archivedAt: Date;
+  archivedBy: string;
   createdAt: Date;
+  createdBy: string;
   email: string;
   firstName: string;
   lastName: string;
   mobile: string;
   password: string;
   updatedAt: Date;
+  updatedBy: string;
   userId: string;
 }
 

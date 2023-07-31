@@ -23,7 +23,7 @@ export const useLogin = () => {
         console.log(error);
         showToast({
           type: 'error',
-          message: 'Login failed',
+          message: error?.response?.data?.message || 'Login failed',
         });
       });
   };

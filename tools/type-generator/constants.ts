@@ -1,5 +1,5 @@
 import { Settings } from 'joi-to-typescript';
-const schemaDirectory = 'apps/api/src/app/schemas/';
+const schemaDirectory = 'libs/shared/types/src/schemas/';
 
 const typeOutputDirectory = 'libs/shared/types/src/generated/';
 

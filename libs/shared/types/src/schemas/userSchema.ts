@@ -1,16 +1,6 @@
 import Joi from 'joi';
+import { User } from '../constants';
 
-const User = {
-  userId: Joi.string().uuid().required(),
-  email: Joi.string().email().required(),
-  firstName: Joi.string().min(1).max(255).required(),
-  lastName: Joi.string().min(1).max(255).required(),
-  mobile: Joi.string().min(10).max(10).required(),
-  createdAt: Joi.date().required(),
-  updatedAt: Joi.date().required(),
-  password: Joi.string().min(8).max(255).required(),
-  archived: Joi.boolean().required(),
-};
 
 export const userUnprotectedSchema = Joi.object(User)
   .meta({ className: 'UserUnprotected' })

@@ -1,70 +1,140 @@
 import { Stack, TextField, Button } from '@vegangouda/web/design-system';
 import { useState } from 'react';
-import { CreateUserTypeInput } from '@vegangouda/shared/types';
+import { UserCreate, userCreateSchema } from '@vegangouda/shared/types';
+import { joiResolver } from '@hookform/resolvers/joi';
+import { useForm, SubmitHandler, Form, Controller } from 'react-hook-form';
 
 export interface RegisterProps {
-  onSubmit: (user: CreateUserTypeInput) => void;
+  onSubmit: (user: UserCreate) => void;
 }
 
-export const Register = ({ onSubmit }: RegisterProps) => {
-  const [user, setUser] = useState<CreateUserTypeInput>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    mobile: '',
+export const Register = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserCreate>({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      mobile: '',
+    },
+    resolver: joiResolver(userCreateSchema),
   });
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUser({
-      ...user,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    onSubmit(user);
-  };
+  const onSubmit: SubmitHandler<UserCreate> = (data) => console.log(data);
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={2}>
-        <TextField
-          id="firstName"
-          name="firstName"
-          label="First Name"
-          value={user.firstName}
-          onChange={handleChange}
+        <Controller
+          name={'firstName'}
+          control={control}
+          render={({
+            field: { onChange, value },
+            fieldState: { error },
+            formState,
+          }) => (
+            <TextField
+              helperText={error ? error.message : null}
+              size="small"
+              error={!!error}
+              onChange={onChange}
+              value={value}
+              fullWidth
+              label={'First Name'}
+              variant="outlined"
+            />
+          )}
         />
-        <TextField
-          id="lastName"
-          name="lastName"
-          label="Last Name"
-          value={user.lastName}
-          onChange={handleChange}
+
+        <Controller
+          name={'lastName'}
+          control={control}
+          render={({
+            field: { onChange, value },
+            fieldState: { error },
+            formState,
+          }) => (
+            <TextField
+              helperText={error ? error.message : null}
+              size="small"
+              error={!!error}
+              onChange={onChange}
+              value={value}
+              fullWidth
+              label={'Last Name'}
+              variant="outlined"
+            />
+          )}
         />
-        <TextField
-          id="email"
-          name="email"
-          label="Email"
-          value={user.email}
-          onChange={handleChange}
+
+        <Controller
+          name={'email'}
+          control={control}
+          render={({
+            field: { onChange, value },
+            fieldState: { error },
+            formState,
+          }) => (
+            <TextField
+              helperText={error ? error.message : null}
+              size="small"
+              error={!!error}
+              onChange={onChange}
+              value={value}
+              fullWidth
+              label={'Email'}
+              variant="outlined"
+            />
+          )}
         />
-        <TextField
-          id="password"
-          name="password"
-          label="Password"
-          type="password"
-          value={user.password}
-          onChange={handleChange}
+
+        <Controller
+          name={'password'}
+          control={control}
+          render={({
+            field: { onChange, value },
+            fieldState: { error },
+            formState,
+          }) => (
+            <TextField
+              helperText={error ? error.message : null}
+              size="small"
+              error={!!error}
+              onChange={onChange}
+              value={value}
+              fullWidth
+              label={'Password'}
+              variant="outlined"
+            />
+          )}
         />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          label="Register"
+
+        <Controller
+          name={'mobile'}
+          control={control}
+          render={({
+            field: { onChange, value },
+            fieldState: { error },
+            formState,
+          }) => (
+            <TextField
+              helperText={error ? error.message : null}
+              size="small"
+              error={!!error}
+              onChange={onChange}
+              value={value}
+              fullWidth
+              label={'Mobile'}
+              variant="outlined"
+            />
+          )}
         />
+
+        <Button type="submit" variant="contained" label="Register" />
       </Stack>
     </form>
   );
