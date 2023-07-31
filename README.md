@@ -1,26 +1,8 @@
-<!-- TODO for this readme: Design a Readme for my nx environment, explaining how to set it up, how to start and run and connect everything, and a tutorial on how to create a new library or app using nx.
-
-  "scripts": {
-    "start": "nx run-many --target=serve --projects=web,api --parallel",
-    "storybook": "nx run web:storybook --serve",
-    "database": "docker-compose up",
-    "generate-types": "ts-node tools/type-generator/index.ts"
-  },
-
-Here is the env
-POSTGRES_DB=vegangoudadb
-POSTGRES_USER=testuser
-POSTGRES_PASSWORD=testpassword
-
-
-SALT_KEY=10 -->
-
 # Welcome to Your NX Environment
 
 This Readme provides a comprehensive guide on setting up, starting, and running your NX environment. Additionally, it includes a tutorial on creating a new library or app using NX.
 
 ## Table of Contents
-
 
 ## Prerequisites
 
