@@ -1,15 +1,14 @@
 import { Toast, RequireAuth } from '@vegangouda/web/design-system';
 import { Route, Routes } from 'react-router-dom';
-import { LoginPage } from '@vegangouda/web/feature-auth';
+import { AuthRoutes } from '@vegangouda/web/feature-auth';
 // import { WebDesignSystem } from '@vegangouda/web/design-system';
 
 export function App() {
   return (
     <>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/auth/*" element={<AuthRoutes />} />
 
-        {/* auth required */}
         <Route
           path="/"
           element={

@@ -24,17 +24,17 @@ export const NavBar = () => {
     });
   }
 
-  if (!isAuthenticated && location.pathname !== '/login') {
+  if (!isAuthenticated && location.pathname !== '/auth/login') {
     buttons.push({
       label: 'Login',
-      to: '/login',
+      to: '/auth/login',
     });
   }
 
-  if (!isAuthenticated && location.pathname !== '/register') {
+  if (!isAuthenticated && location.pathname !== '/auth/register') {
     buttons.push({
       label: 'Register',
-      to: '/register',
+      to: '/auth/register',
     });
   }
 

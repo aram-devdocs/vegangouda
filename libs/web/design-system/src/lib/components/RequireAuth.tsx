@@ -10,7 +10,7 @@ export function RequireAuth({ children }: FuncProviderProps) {
   ) : (
     <Navigate
       to={{
-        pathname: '/login',
+        pathname: '/auth/login',
       }}
       replace
       state={{ path: location.pathname }}

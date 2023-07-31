@@ -1,4 +1,4 @@
-import { LayoutContainer } from '@vegangouda/web/design-system';
+import { LayoutContainer, Typography } from '@vegangouda/web/design-system';
 import { Login } from '../components/Login';
 
 export const LoginPage = () => {

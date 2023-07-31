@@ -1,1 +1,1 @@
-export * from './lib/pages/LoginPage';
+export * from './lib/routes/AuthRoutes';
