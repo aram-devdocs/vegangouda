@@ -110,3 +110,7 @@ yarn-error.log
 
 
 packages/apps/mobile-e2e/artifacts
+
+
+# python venv
+.venv
