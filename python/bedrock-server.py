@@ -12,6 +12,9 @@ load_dotenv(dotenv_path="../.local.env")
 # AWS credentials
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+
+print(AWS_ACCESS_KEY_ID)
+print(AWS_SECRET_ACCESS_KEY)
 accept = "application/json"
 contentType = "application/json"
 
