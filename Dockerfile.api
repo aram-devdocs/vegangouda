@@ -1,0 +1,40 @@
+# Step 1: Build the app
+FROM node:20 AS build
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the package.json and lock files
+COPY package.json package-lock.json ./
+
+# Install dependencies
+RUN if [ ! -d "./node_modules" ]; then \
+      npm install; \
+    else \
+      npm ci; \
+    fi
+
+# Copy the entire repository to the container
+COPY . .
+
+# Build the Fastify app // TODO: use NODE_ENV to determine the configuration
+RUN npx nx run api:build --configuration=production 
+
+# Step 2: Create the production image
+FROM node:20 AS production
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the build output and package files from the previous stage
+COPY --from=build /app/dist/apps/api /app
+COPY --from=build /app/package.json /app/package-lock.json ./
+
+# Install only production dependencies
+RUN npm install --production
+
+# Expose the port that your Fastify app runs on
+EXPOSE 3000
+
+# Define the command to start your Fastify app
+CMD ["node", "main.js"]

@@ -5,8 +5,12 @@
   "scripts": {
     "web": "nx run web:serve",
     "api": "nx run api:serve",
+    "build": "docker compose -f docker-compose.base.yml -f docker-compose.local.yml build",
+    "start": "docker compose -f docker-compose.base.yml -f docker-compose.local.yml up",
+    "rebuild": "docker compose -f docker-compose.base.yml -f docker-compose.local.yml up --build",
+    "start:swarm": "docker stack deploy -c docker-compose.base.yml -c docker-compose.swarm.yml mystack",
+    "stop:swarm": "docker stack rm mystack",
     "storybook": "nx run web:storybook --serve",
-    "database": "docker-compose up",
     "generate-types": "ts-node tools/type-generator/index.ts"
   },
   "private": true,
@@ -29,6 +33,7 @@
     "fastify-cors": "^6.1.0",
     "fastify-plugin": "~4.5.0",
     "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",

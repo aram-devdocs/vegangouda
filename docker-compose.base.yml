@@ -1,0 +1,40 @@
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    environment:
+      DATABASE_URL: postgres://testuser:testpassword@postgres:5432/vegangoudadb
+    ports:
+      - '3000:3000'
+    networks:
+      - webnet
+      - dbnet
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - '80:80'
+    networks:
+      - webnet
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: vegangoudadb
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - dbnet
+
+networks:
+  webnet:
+  dbnet:
+
+volumes:
+  pgdata:

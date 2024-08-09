@@ -1,0 +1,22 @@
+services:
+  api:
+    extends:
+      file: docker-compose.base.yml
+      service: api
+    restart: on-failure
+
+  web:
+    extends:
+      file: docker-compose.base.yml
+      service: web
+    restart: on-failure
+
+  postgres:
+    extends:
+      file: docker-compose.base.yml
+      service: postgres
+    restart: on-failure
+
+volumes:
+  pgdata:
+    driver: local

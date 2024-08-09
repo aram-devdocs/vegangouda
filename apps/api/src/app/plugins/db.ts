@@ -2,18 +2,10 @@
 import { Pool } from 'pg';
 import { createTables } from '../utils/seed';
 
-const user = process.env.POSTGRES_USER;
-const host = process.env.POSTGRES_HOST;
-const database = process.env.POSTGRES_DB;
-const password = process.env.POSTGRES_PASSWORD;
-const port = process.env.POSTGRES_PORT;
+const DATABASE_URL = process.env.DATABASE_URL;
 
 const pool = new Pool({
-  user,
-  host,
-  database,
-  password,
-  port: Number(port),
+  connectionString: DATABASE_URL,
 });
 export const db = {
   query: (text: string, params: any) => pool.query(text, params),
@@ -22,14 +14,14 @@ export const db = {
 
 // test connection
 
-// db.query('SELECT NOW()', (err, res) => {
-//   if (err) {
-//     console.log(err);
-//   } else {
-//     console.log('connected to postgres db');
-//   }
-// });
+db.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('connected to postgres db');
+  }
+});
 
-// createTables().then((r) => {
-//   console.log(r);
-// });
+createTables().then((r) => {
+  console.log(r);
+});

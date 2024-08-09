@@ -1,0 +1,30 @@
+# Step 1: Build the React app
+FROM node:20 AS build
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the package.json and package-lock.json files
+COPY package.json package-lock.json ./
+
+# Install the dependencies
+RUN if [ ! -d "./node_modules" ]; then \
+      npm install; \
+    else \
+      npm ci; \
+    fi
+
+# Copy the entire project to the container
+COPY . .
+
+# Step 2: Serve the built app using NGINX
+FROM nginx:latest
+
+# Copy the built app from the previous stage
+COPY --from=build /app/dist/apps/web /usr/share/nginx/html
+
+# Expose port 80 for the NGINX server
+EXPOSE 80
+
+# Start NGINX server
+CMD ["nginx", "-g", "daemon off;"]
