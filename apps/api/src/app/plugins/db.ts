@@ -22,14 +22,14 @@ export const db = {
 
 // test connection
 
-db.query('SELECT NOW()', (err, res) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log('connected to postgres db');
-  }
-});
+// db.query('SELECT NOW()', (err, res) => {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log('connected to postgres db');
+//   }
+// });
 
-createTables().then((r) => {
-  console.log(r);
-});
+// createTables().then((r) => {
+//   console.log(r);
+// });
