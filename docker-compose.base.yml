@@ -1,8 +1,6 @@
 services:
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile.api
+    image: vegangouda-api:latest
     environment:
       DATABASE_URL: postgres://testuser:testpassword@postgres:5432/vegangoudadb
     ports:
@@ -10,15 +8,33 @@ services:
     networks:
       - webnet
       - dbnet
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role_api == true
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile.web
+    image: vegangouda-web:latest
     ports:
       - '80:80'
     networks:
       - webnet
+    deploy:
+      replicas: 2
+      placement:
+        constraints:
+          - node.labels.role_web == true
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
 
   postgres:
     image: postgres:latest
@@ -32,6 +48,16 @@ services:
       - '5432:5432'
     networks:
       - dbnet
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role_db == true
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
 
 networks:
   webnet:
@@ -39,3 +65,4 @@ networks:
 
 volumes:
   pgdata:
+    driver: local

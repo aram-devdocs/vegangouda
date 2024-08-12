@@ -105,7 +105,7 @@ For deploying to a single production server:
 
 - **Deploy the Application Stack to a Production Swarm:**
    ```bash
-   npm run deploy:swarm
+   npm run start:swarm
    ```
 
 - **Stop the Swarm Stack:**

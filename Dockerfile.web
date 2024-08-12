@@ -17,6 +17,10 @@ RUN if [ ! -d "./node_modules" ]; then \
 # Copy the entire project to the container
 COPY . .
 
+# build the app npx nx run web:build --configuration=production 
+RUN npx nx run web:build --configuration=production
+
+
 # Step 2: Serve the built app using NGINX
 FROM nginx:latest
 
