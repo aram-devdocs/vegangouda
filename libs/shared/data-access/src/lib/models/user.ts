@@ -1,4 +1,4 @@
-import { query } from '../utils/query';
+// import { query } from '../utils/query';
 import {
   UserCreate,
   UserDelete,
@@ -9,6 +9,11 @@ import {
   UserUnprotected,
   UserUpdate,
 } from '@vegangouda/shared/types';
+
+const query = async ({ text, values }: { text: string; values: any[] }) => {
+  // create mock query function
+  return { rows: [{ user_id: '1' }] };
+};
 
 export const User = {
   async findByUserId({ user_id }: UserGet) {

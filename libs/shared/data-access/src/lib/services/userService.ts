@@ -4,7 +4,7 @@ import {
   //   validateMobile,
   validatePassword,
 } from '@vegangouda/shared/utils-validation';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import {
   userCreateSchema,
   userUpdateSchema,
