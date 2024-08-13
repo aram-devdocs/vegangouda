@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model twofactorauth {
+  twofactorauthid String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id         String   @db.Uuid
+  secret          String   @db.VarChar(255)
+  createdat       DateTime @default(now()) @db.Timestamp(6)
+  updatedat       DateTime @default(now()) @db.Timestamp(6)
+  users           users    @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model users {
+  user_id       String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email         String          @unique @db.VarChar(255)
+  password      String          @db.VarChar(255)
+  firstname     String          @db.VarChar(255)
+  lastname      String          @db.VarChar(255)
+  mobile        String          @db.VarChar(255)
+  createdat     DateTime        @default(now()) @db.Timestamp(6)
+  updatedat     DateTime        @default(now()) @db.Timestamp(6)
+  twofactorauth twofactorauth[]
+}
