@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "docker-compose -f docker-compose.base.yml up postgres && nx run-many --target=serve --projects=api,web",
+    "start": "concurrently \"docker compose -f docker-compose.base.yml up postgres\" \"nx run-many --target=serve --projects=api,web\"",
     "web": "nx run web:serve",
     "api": "nx run api:serve",
+    "database": "docker compose -f docker-compose.base.yml up postgres",
     "build:api": "dotenv --file .env.local -- docker build -t vegangouda-api -f Dockerfile.api .",
     "build:web": "dotenv --file .env.local -- docker build -t vegangouda-web -f Dockerfile.web .",
     "build:all": "npm run build:api && npm run build:web",

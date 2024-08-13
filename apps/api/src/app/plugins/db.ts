@@ -25,6 +25,7 @@ db.query('SELECT NOW()', (err, res) => {
     console.log('connected to postgres db');
   }
 });
+
 createTables().then((r) => {
   console.log(r);
 });
