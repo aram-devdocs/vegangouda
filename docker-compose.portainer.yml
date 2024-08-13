@@ -15,6 +15,22 @@ services:
         constraints:
           - node.role == manager
 
+  registry:
+    image: registry:2
+    ports:
+      - target: 5000
+        published: 5000
+        protocol: tcp
+        mode: ingress
+    volumes:
+      - registry_data:/var/lib/registry
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
 volumes:
   portainer_data:
+    driver: local
+  registry_data:
     driver: local
