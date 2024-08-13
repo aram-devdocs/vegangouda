@@ -61,9 +61,10 @@ export const UserService = {
     // see if user exists with email or mobile
 
     const doesEmailExistOnUser = await User.findByEmail({ email });
+    console.log('doesEmailExistOnUser', doesEmailExistOnUser);
 
     if (doesEmailExistOnUser) {
-      throw new Error('Email already exists');
+      throw new Error('Email already exists: ' + email);
     }
 
     const doesMobileExistOnUser = await User.findByMobile({ mobile });

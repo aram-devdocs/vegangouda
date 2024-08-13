@@ -4,6 +4,7 @@ import { createTables } from '../utils/seed';
 
 const DATABASE_URL = process.env.DATABASE_URL;
 
+
 const pool = new Pool({
   connectionString: DATABASE_URL,
 }).on('error', (err, client) => {
@@ -25,6 +26,16 @@ db.query('SELECT NOW()', (err, res) => {
     console.log('connected to postgres db');
   }
 });
+
+db.query('SELECT * FROM users', (err, res) => {
+  if (err) {
+    console.log(err);
+    throw err;
+  } else {
+    console.log(res.rows);
+  }
+}
+);
 createTables().then((r) => {
   console.log(r);
 });
