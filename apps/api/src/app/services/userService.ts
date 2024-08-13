@@ -26,6 +26,7 @@ import {
 
 import jwt from 'jsonwebtoken';
 const jwtSecret = process.env.JWT_SECRET;
+const saltKey = process.env.SALT_KEY;
 export const UserService = {
   async me(input: MeInput) {
     // see if input.token has a valid jwt that is both valid and not expired, if so return a fresh token
@@ -81,7 +82,7 @@ export const UserService = {
       throw new Error('Invalid password');
     }
 
-    const hashedPassword = await bcrypt.hash(password, Number(jwtSecret));
+    const hashedPassword = await bcrypt.hash(password, Number(saltKey));
 
     const user = await User.create({
       ...input,
@@ -110,7 +111,7 @@ export const UserService = {
       throw new Error('Invalid password');
     }
 
-    const hashedPassword = await bcrypt.hash(password, jwtSecret);
+    const hashedPassword = await bcrypt.hash(password, Number(saltKey));
 
     const user = await User.update({
       ...input,

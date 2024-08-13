@@ -1,10 +1,17 @@
 services:
   api:
     image: vegangouda-api:latest
+
+    env_file:
+      - .env
+      - .env.local
+      - .env.${NODE_ENV:-development}
+
     environment:
-      DATABASE_URL: postgres://testuser:testpassword@vegangouda_postgres:5432/vegangoudadb
+      DATABASE_URL: ${DATABASE_URL:-postgres://testuser:testpassword@postgres:5432/vegangoudadb}
+
     ports:
-      - '3000:3000'
+      - ${API_PORT:-3000}:3000
     networks:
       - webnet
       - dbnet
@@ -18,8 +25,16 @@ services:
 
   web:
     image: vegangouda-web:latest
+    env_file:
+      - .env
+      - .env.local
+      - .env.${NODE_ENV:-development}
+
+    environment:
+      - API_URL={API_URL:-http://api:3000}
+
     ports:
-      - '80:80'
+      - ${WEB_PORT:-80}:80
     networks:
       - webnet
     deploy:
@@ -32,14 +47,20 @@ services:
 
   postgres:
     image: postgres:latest
+    env_file:
+      - .env
+      - .env.local
+      - .env.${NODE_ENV:-development}
+
     environment:
-      POSTGRES_DB: vegangoudadb
-      POSTGRES_USER: testuser
-      POSTGRES_PASSWORD: testpassword
+      POSTGRES_DB: ${POSTGRES_DB:-vegangoudadb}
+      POSTGRES_USER: ${POSTGRES_USER:-testuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-testpassword}
+
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
+      - ${POSTGRES_PORT:-5432}:5432
     networks:
       - dbnet
     deploy:

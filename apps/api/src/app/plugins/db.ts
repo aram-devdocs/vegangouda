@@ -3,7 +3,6 @@ import { Pool } from 'pg';
 import { createTables } from '../utils/seed';
 
 const DATABASE_URL = process.env.DATABASE_URL;
-console.log(DATABASE_URL);
 
 const pool = new Pool({
   connectionString: DATABASE_URL,
@@ -18,14 +17,14 @@ export const db = {
 
 // test connection
 
-// db.query('SELECT NOW()', (err, res) => {
-//   if (err) {
-//     console.log(err);
-//     throw err;
-//   } else {
-//     console.log('connected to postgres db');
-//   }
-// });
-// createTables().then((r) => {
-//   console.log(r);
-// });
+db.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.log(err);
+    throw err;
+  } else {
+    console.log('connected to postgres db');
+  }
+});
+createTables().then((r) => {
+  console.log(r);
+});
