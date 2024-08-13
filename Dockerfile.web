@@ -14,19 +14,11 @@ RUN if [ ! -d "./node_modules" ]; then \
       npm ci; \
     fi
 
-# Accept build arguments
-ARG REACT_APP_API_URL
-ARG REACT_APP_API_PORT
-
-# Set environment variables for React
-ENV REACT_APP_API_URL=$REACT_APP_API_URL
-ENV REACT_APP_API_PORT=$REACT_APP_API_PORT
-
 # Copy the entire project to the container
 COPY . .
 
-# Build the app with the environment variables
-RUN npx cross-env REACT_APP_API_URL=$REACT_APP_API_URL REACT_APP_API_PORT=$REACT_APP_API_PORT npx nx run web:build --configuration=production
+# Build the app
+RUN npx nx run web:build --configuration=production
 
 # Step 2: Serve the built app using NGINX
 FROM nginx:latest
