@@ -9,10 +9,10 @@ This README provides a comprehensive guide on setting up, starting, and running 
 - [Running the App](#running-the-app)
 - [Docker Workflow Commands](#docker-workflow-commands)
   - [Building and Testing Locally](#1-building-and-testing-locally)
-  - [Building and Testing Locally with a Swarm](#2-building-and-testing-locally-with-a-swarm)
-  - [Building and Deploying to a Production Single Instance](#3-building-and-deploying-to-a-production-single-instance)
-  - [Building and Deploying to a Production Swarm](#4-building-and-deploying-to-a-production-swarm)
+  - [Using Portainer for Docker Swarm Management](#2-using-portainer-for-docker-swarm-management)
+  - [Deprecated: Manual Docker Swarm Commands](#3-deprecated-manual-docker-swarm-commands)
   - [Additional Commands](#additional-commands)
+- [Troubleshooting Docker Swarm](#troubleshooting-docker-swarm)
 - [Creating a New Library or App](#creating-a-new-library-or-app)
 - [Available Scripts](#available-scripts)
 - [Conclusion](#conclusion)
@@ -30,58 +30,41 @@ Before proceeding with the setup, ensure you have the following prerequisites in
 1. Clone the repository to your local machine.
 2. Navigate to the root of the cloned project.
 3. Run the following command to install the project dependencies:
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 4. Configure the environment variables:
 
-   - Create a `.env` file in the root of the project.
-   - Add the following environment variables to the `.env` file:
+    - Create a `.env` file in the root of the project.
+    - Add the following environment variables to the `.env` file:
 
-     ```plaintext
-     POSTGRES_DB=vegangoudadb
-     POSTGRES_USER=testuser
-     POSTGRES_PASSWORD=testpassword
-     SALT_KEY=10
-     ```
+        ```plaintext
+        POSTGRES_DB=vegangoudadb
+        POSTGRES_USER=testuser
+        POSTGRES_PASSWORD=testpassword
+        SALT_KEY=10
+        ```
 
 5. Start the database with the following command:
-   ```bash
-   npm run database
-   ```
+    ```bash
+    npm run database
+    ```
 
 ## Running the App
 
 To start the app for development, run:
 
-```bash
-npm start
-```
+    ```bash
+    npm start
+    ```
 
 This will run the `serve` target for the `web` and `api` projects in parallel, enabling hot-reloading and other development features.
 
 To run Storybook, execute:
 
-```bash
-npm run storybook
-```
-
-## Troubleshooting docker swarm
-
-Unable to access externally from manager? May need to recreate ingress network: https://stackoverflow.com/questions/59007780/container-running-on-docker-swarm-not-accessible-from-outside
-
-1. Remove services that publish ports
-2. Remove existing network: `docker network rm ingress`
-3. Recreate using non-conflicting subnet:
-   ```bash
-   docker network create \
-    --driver overlay \
-    --ingress \
-    --subnet 172.16.0.0/16 \
-    --gateway 172.16.0.1 \
-    ingress
-   ```
-4. Restart services
+    ```bash
+    npm run storybook
+    ```
 
 ## Docker Workflow Commands
 
@@ -93,79 +76,126 @@ For local development, you can build and run your application with hot-reloading
 
 - **Build Docker Images for Local Development:**
 
-  ```bash
-  npm run build
-  ```
+    ```bash
+    npm run build
+    ```
 
 - **Start Containers for Local Development:**
 
-  ```bash
-  npm run start
-  ```
+    ```bash
+    npm run start
+    ```
 
 - **Rebuild and Start Containers for Local Development:**
-  ```bash
-  npm run rebuild
-  ```
+    
+    ```bash
+    npm run rebuild
+    ```
 
-### 2. Building and Testing Locally with a Swarm
+### 2. Using Portainer for Docker Swarm Management
 
-To simulate a production-like environment using Docker Swarm locally:
+Instead of manually managing your Docker Swarm setup via the command line, we recommend using [Portainer](https://www.portainer.io/) for a more streamlined and user-friendly experience. Portainer provides a powerful UI to manage your Docker Swarm clusters.
 
-- **Build Docker Images for Local Swarm Testing:**
+#### Setting Up Portainer
 
-  ```bash
-  npm run build
-  ```
+1. **Deploy Portainer on your Docker Swarm:**
 
-- **Deploy the Application Stack to Local Swarm:**
-  ```bash
-  npm run start:swarm
-  ```
+    Run the following command to deploy Portainer as a stack on your Swarm:
 
-### 3. Building and Deploying to a Production Single Instance
+    ```bash
+    npm run start:portainer
+    ```
 
-For deploying to a single production server:
+2. **Access the Portainer UI:**
 
-- **Deploy the Application Stack to a Production Swarm:**
+    Once deployed, you can access the Portainer UI by navigating to `http://<manager-node-ip>:9000` in your web browser. Set up your admin user and password.
 
-  ```bash
-  npm run start:swarm
-  ```
+3. **Deploy Your Application Stack via Portainer:**
 
-- **Stop the Swarm Stack:**
-  ```bash
-  npm run stop:swarm
-  ```
+    - Log in to the Portainer UI.
+    - Go to **Stacks** and select **Add Stack**.
+    - Upload your `docker-compose.base.yml` (and any environment-specific compose files) to create and manage your application stack.
+    - Configure the stack as needed and deploy it.
+
+#### Updating and Managing Your Services
+
+- **Service Updates:** Use the Portainer UI to update services, scale replicas, and manage rollouts.
+- **Monitoring:** Portainer provides built-in monitoring tools to view logs, service status, and resource usage.
+
+### 3. Deprecated: Manual Docker Swarm Commands
+
+The following commands are now deprecated in favor of using Portainer for managing Docker Swarm. These commands are provided here for reference but should not be used.
+
+- **Deprecated: Deploy the Application Stack to Local Swarm:**
+  
+    ```bash
+    npm run start:swarm
+    ```
+    _(Deprecated: Use Portainer to deploy stacks. Original command: `docker stack rm vegangouda && docker network prune -f && NODE_ENV=production API_REPLICAS=1 API_PARALLELISM=1 WEB_REPLICAS=1 WEB_PARALLELISM=1 DB_REPLICAS=1 DB_PARALLELISM=1 docker stack deploy -c docker-compose.base.yml vegangouda`)_
+
+- **Deprecated: Stop the Swarm Stack:**
+
+    ```bash
+    npm run stop:swarm
+    ```
+    _(Deprecated: Use Portainer to manage stacks. Original command: `docker stack rm vegangouda`)_
+
+- **Deprecated: Update the Application Stack:**
+
+    ```bash
+    npm run update:swarm
+    ```
+    _(Deprecated: Use Portainer to update services. Original commands: `npm run update:swarm:api && npm run update:swarm:web && npm run update:swarm:db`)_
 
 ### Additional Commands
 
 - **Serve Storybook for the Web Component Library:**
 
-  ```bash
-  npm run storybook
-  ```
+    ```bash
+    npm run storybook
+    ```
 
 - **Generate TypeScript Types:**
-  ```bash
-  npm run generate-types
-  ```
+    
+    ```bash
+    npm run generate-types
+    ```
+
+## Troubleshooting Docker Swarm
+
+Unable to access externally from the manager? You may need to recreate the ingress network: [Stack Overflow Link](https://stackoverflow.com/questions/59007780/container-running-on-docker-swarm-not-accessible-from-outside).
+
+1. Remove services that publish ports.
+2. Remove the existing network:
+    ```bash
+    docker network rm ingress
+    ```
+3. Recreate using a non-conflicting subnet:
+    ```bash
+    docker network create \
+     --driver overlay \
+     --ingress \
+     --subnet 172.16.0.0/16 \
+     --gateway 172.16.0.1 \
+     ingress
+    ```
+4. Restart services.
 
 ## Creating a New Library or App
 
 To create a new library, run:
 
-```bash
-nx generate @nrwl/workspace:library <library-name>
-```
+    ```bash
+    nx generate @nrwl/workspace:library <library-name>
+    ```
 
 This will create a new library in the `libs` directory.
 
 To create a new app, run:
 
-```bash
-nx generate @nrwl/angular:app <app-name>
-```
+    ```bash
+    nx generate @nrwl/angular:app <app-name>
+    ```
 
 This will create a new app in the `apps` directory.
 
@@ -175,7 +205,9 @@ This will create a new app in the `apps` directory.
 - `npm run storybook`: Runs Storybook for the `web` project.
 - `npm run database`: Starts the PostgreSQL database using Docker.
 - `npm run generate-types`: Generates TypeScript types for the PostgreSQL schema.
+- `npm run start:portainer`: Deploys Portainer on Docker Swarm.
+- `npm run stop:portainer`: Stops the Portainer stack.
 
 ## Conclusion
 
-That's it! You should now have a fully functional NX environment along with a comprehensive set of Docker commands to manage your development and production workflows. If you have any questions or issues, please refer to the NX documentation or reach out to me directly.
+That's it! You should now have a fully functional NX environment along with a streamlined workflow for managing your Docker Swarm environment using Portainer. If you have any questions or issues, please refer to the NX documentation or reach out to me directly.
