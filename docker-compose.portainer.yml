@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   portainer:
     image: portainer/portainer-ce:latest
@@ -28,6 +30,18 @@ services:
       placement:
         constraints:
           - node.role == manager
+
+  nfs:
+    image: itsthenetwork/nfs-server-alpine:latest
+    container_name: nfs-server
+    privileged: true
+    restart: unless-stopped
+    volumes:
+      - /mnt/nfs/raid:/nfsshare
+    environment:
+      - SHARED_DIRECTORY=/nfsshare
+    ports:
+      - '2049:2049'
 
 volumes:
   portainer_data:
