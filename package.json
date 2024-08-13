@@ -10,7 +10,7 @@
     "build:all": "concurrently \"npm run build:api\" \"npm run build:web\"",
     "start:local": "API_REPLICAS=1 API_PARALLELISM=1 WEB_REPLICAS=1 WEB_PARALLELISM=2 DB_REPLICAS=1 DB_PARALLELISM=1 docker compose -f docker-compose.base.yml -f docker-compose.local.yml up",
     "stop:local": "docker compose -f docker-compose.base.yml -f docker-compose.local.yml down",
-    "start:swarm": "NODE_ENV=production API_REPLICAS=2 API_PARALLELISM=2 WEB_REPLICAS=2 WEB_PARALLELISM=2 DB_REPLICAS=1 DB_PARALLELISM=1 docker stack deploy -c docker-compose.base.yml vegangouda",
+    "start:swarm": "docker stack rm vegangouda && docker network prune -f && NODE_ENV=production API_REPLICAS=2 API_PARALLELISM=2 WEB_REPLICAS=2 WEB_PARALLELISM=2 DB_REPLICAS=1 DB_PARALLELISM=1 docker stack deploy -c docker-compose.base.yml vegangouda",
     "stop:swarm": "docker stack rm vegangouda",
     "rebuild": "npm run build:all && npm run start:local",
     "update:swarm:api": "docker service update --image vegangouda-api:latest vegangouda_api",
