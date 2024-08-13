@@ -58,7 +58,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-testuser}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-testpassword}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ${NFS_VOLUME:-pgdata}:/var/lib/postgresql/data
     ports:
       - target: 5432
         published: ${POSTGRES_PORT:-5432}

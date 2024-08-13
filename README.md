@@ -16,6 +16,11 @@ This README provides a comprehensive guide on setting up, starting, and running 
 - [Troubleshooting Docker Swarm and Registry](#troubleshooting-docker-swarm-and-registry)
   - [Registry Issues](#registry-issues)
   - [Swarm Service Issues](#swarm-service-issues)
+- [NFS Storage Server Setup, Configuration, Maintenance, and Troubleshooting](#nfs-storage-server-setup-configuration-maintenance-and-troubleshooting)
+  - [Setting Up the NFS Server with RAID](#1-setting-up-the-nfs-server-with-raid)
+  - [Configuring Services to Use NFS Storage](#2-configuring-services-to-use-nfs-storage)
+  - [Maintenance and Monitoring](#3-maintenance-and-monitoring)
+  - [Troubleshooting](#4-troubleshooting)
 - [Creating a New Library or App](#creating-a-new-library-or-app)
 - [Available Scripts](#available-scripts)
 - [Conclusion](#conclusion)
@@ -359,6 +364,79 @@ docker pull {REGISTRY_IP}:5000/vegangouda-api:latest
 - **Port Conflicts**:
   - Ensure that the ports specified in your `docker-compose` files are not already in use by another service on the node.
 
+## NFS Storage Server Setup, Configuration, Maintenance, and Troubleshooting
+
+This section provides instructions on setting up an NFS storage server with RAID on a Raspberry Pi, integrating it with Docker and Portainer, and ensuring data redundancy and persistence.
+
+### 1. Setting Up the NFS Server with RAID
+
+To create a RAID-protected NFS server:
+
+1. **Run the setup script**:
+
+```bash
+npm run setup:raid-nfs
+```
+
+    This script will guide you through partitioning the drives, creating a RAID array, setting up the filesystem, and configuring the NFS server.
+
+2. **Deploy the NFS Server**:
+   After setting up RAID, deploy the NFS server using Docker and Portainer:
+
+```bash
+npm run start:portainer
+```
+
+    This command will start Portainer and deploy the NFS server as part of the stack.
+
+### 2. Configuring Services to Use NFS Storage
+
+In your `docker-compose.base.yml`, you can configure services like Postgres to use the NFS storage for data persistence.
+
+- **Environment Variable**:
+  - If `NFS_VOLUME` is provided, it will be used for storage.
+  - If not, it defaults to a local volume.
+
+### 3. Maintenance and Monitoring
+
+- **Check RAID Status**:
+  To check the status of the RAID array, run:
+
+```bash
+cat /proc/mdstat
+```
+
+- **Replacing a Failed Drive**:
+  If a drive fails, replace it and add it back to the RAID array:
+
+```bash
+sudo mdadm /dev/md0 --add /dev/sdc1
+```
+
+- **Automated Backups**:
+  Consider setting up automated backups to an external location or cloud service using tools like `rsync`.
+
+### 4. Troubleshooting
+
+- **NFS Server Not Accessible**:
+
+  - Ensure the NFS server container is running.
+  - Verify that the correct ports are open and accessible.
+
+- **Unable to Mount NFS Share**:
+
+  - Check the NFS exports and ensure they are properly configured.
+  - Restart the NFS server:
+    ```bash
+    sudo systemctl restart nfs-kernel-server
+    ```
+
+- **RAID Array Issues**:
+  - Monitor the RAID array status regularly with `cat /proc/mdstat`.
+  - For any issues, refer to the RAID management tools and logs.
+
+With this setup, you have a robust NFS storage server integrated with Docker, ensuring data persistence and redundancy across your services.
+
 ## Creating a New Library or App
 
 To create a new library, run:
@@ -386,6 +464,7 @@ This will create a new app in the `apps` directory.
 - `npm run build:all:push`: Builds and pushes Docker images to the private registry.
 - `npm run start:portainer`: Deploys Portainer on Docker Swarm.
 - `npm run stop:portainer`: Stops the Portainer stack.
+- `npm run setup:raid-nfs`: Sets up an NFS server with RAID on a Raspberry Pi.
 
 ## Conclusion
 
