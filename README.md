@@ -30,6 +30,37 @@ Before proceeding with the setup, ensure you have the following prerequisites in
 - Docker Desktop (if using macOS or Windows)
 - Raspberry Pi setup for Docker Swarm (if applicable)
 
+## Security Considerations
+
+When working with Docker Swarm and a private Docker registry, it's essential to follow security best practices to protect your applications and data. Here are some key considerations:
+
+- **Secure Your Docker Swarms and the Registry:**
+
+  - Use strong passwords and secure your Docker Swarm manager nodes.
+  - Restrict access to the Docker registry and ensure it is only accessible to authorized users.
+  - Regularly update your Docker images and the underlying OS to patch security vulnerabilities.
+
+- **Use Secure Communication Channels:**
+
+  - Enable TLS encryption for communication between Docker Swarm nodes and the registry.
+  - Use VPNs or secure tunnels to protect data in transit between nodes and the registry.
+
+- **Monitor and Audit Access:**
+
+  - Monitor access logs for the Docker registry and Swarm nodes.
+  - Set up alerts for suspicious activity or unauthorized access attempts.
+
+- **Implement Role-Based Access Control (RBAC):**
+
+  - Use RBAC to control access to Docker Swarm services and the registry.
+  - Limit privileges to only those necessary for users and services.
+
+- **Regularly Backup Data:**
+  - Back up your Docker Swarm services and the registry data to prevent data loss in case of a failure.
+
+By following these security practices, you can help protect your Docker Swarm environment and the private Docker registry from potential threats and vulnerabilities.
+**NOTE**: In its current setup, all of these services use HTTP. For production use, it is recommended to secure the communication channels using HTTPS and other security measures, if the devices are exposed to the internet. This current setup is applied on a local network for development purposes, and security measures are not enforced. Because of this, you may run into issues with insecure registries, or devices not connecting. Troubleshooting these issues is beyond the scope of this document, but you can find more information on securing Docker Swarm and the Docker registry in the official Docker documentation. Bugs found during development will be documented in the [Troubleshooting Docker Swarm and Registry](#troubleshooting-docker-swarm-and-registry) section.
+
 ## Setup
 
 1. Clone the repository to your local machine.
