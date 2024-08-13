@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   api:
     image: ${REGISTRY_IP_W_PORT}vegangouda-api:latest

@@ -69,7 +69,12 @@ export const animationProps = {
   },
 };
 
+console.log('process.env.API_URL', process.env.API_URL);
+console.log('process.env.REACT_APP_API_URL', process.env.REACT_APP_API_URL);
+console.log('process.env.API_PORT', process.env.API_PORT);
+console.log('process.env.REACT_APP_API_PORT', process.env.REACT_APP_API_PORT);
 export const api_port = process.env.API_PORT || 3000;
+
 export const baseURL = process.env.API_URL || `http://10.0.0.42:3000`; // TODO: change this to the actual api url
 export const defaultTimeout = 1000;
 
