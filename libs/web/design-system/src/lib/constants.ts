@@ -70,7 +70,7 @@ export const animationProps = {
 };
 
 export const api_port = process.env.API_PORT || 3000;
-export const baseURL = process.env.API_URL || `http://localhost:${api_port}`;
+export const baseURL = process.env.API_URL || `http://api:${api_port}`;
 export const defaultTimeout = 1000;
 
 export interface FuncProviderProps {
