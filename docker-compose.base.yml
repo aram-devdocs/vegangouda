@@ -82,28 +82,10 @@ services:
       restart_policy:
         condition: on-failure
 
-  portainer:
-    image: portainer/portainer-ce:latest
-    command: -H unix:///var/run/docker.sock
-    ports:
-      - target: 9000
-        published: 9000
-        protocol: tcp
-        mode: ingress
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager
-
 networks:
   webnet:
   dbnet:
 
 volumes:
   pgdata:
-    driver: local
-  portainer_data:
     driver: local
