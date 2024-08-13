@@ -1,6 +1,6 @@
 services:
   api:
-    image: vegangouda-api:latest
+    image: ${REGISTRY_IP_W_PORT}vegangouda-api:latest
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://testuser:testpassword@postgres:5432/vegangoudadb}
       JWT_SECRET: ${JWT_SECRET}
@@ -25,10 +25,9 @@ services:
         condition: on-failure
 
   web:
-    image: vegangouda-web:latest
+    image: ${REGISTRY_IP_W_PORT}vegangouda-web:latest
     environment:
       API_URL: ${API_URL:-http://api:3000}
-
     ports:
       - target: 80
         published: ${WEB_PORT:-80}
