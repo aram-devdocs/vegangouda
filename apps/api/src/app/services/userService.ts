@@ -147,7 +147,7 @@ export const UserService = {
       throw new Error('Invalid password');
     }
 
-    console.log('user', user);
+    console.log('jwtSecret', jwtSecret);
     // generate jwt
     const token = jwt.sign(
       {
