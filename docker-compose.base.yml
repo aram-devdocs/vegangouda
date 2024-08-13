@@ -10,6 +10,7 @@ services:
     ports:
       - target: 3000
         published: ${API_PORT:-3000}
+        protocol: tcp
         mode: host
     networks:
       - webnet
@@ -32,10 +33,11 @@ services:
       - .env.local
       - .env.${NODE_ENV:-development}
     environment:
-      - API_URL=${API_URL:-http://api:3000}
+      - API_URL: ${API_URL:-http://api:3000}
     ports:
       - target: 80
         published: ${WEB_PORT:-80}
+        protocol: tcp
         mode: host
     networks:
       - webnet
@@ -65,6 +67,7 @@ services:
     ports:
       - target: 5432
         published: ${POSTGRES_PORT:-5432}
+        protocol: tcp
         mode: host
     networks:
       - dbnet
@@ -85,6 +88,7 @@ services:
     ports:
       - target: 9000
         published: 9000
+        protocol: tcp
         mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
