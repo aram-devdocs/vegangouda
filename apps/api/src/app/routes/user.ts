@@ -1,28 +1,33 @@
 import { FastifyInstance } from 'fastify';
 
 import {
+  UserController,
+  useMiddleware,
+  userPaths,
+} from '@vegangouda/shared/data-access';
+const {
   createUser,
-  updateUser,
-  deleteUser,
-  getUserById,
-  getUserByEmail,
   loginWithEmail,
   me,
-  useMiddleware,
-} from '@vegangouda/shared/data-access';
+  updateUser,
+  archiveByUserId,
+  getUserById,
+  getUserByEmail,
+} = UserController;
 const auth = useMiddleware({});
 
 export default async function (fastify: FastifyInstance) {
-  fastify.get('/test', async (request, reply) => {
-    return { message: 'Hello API' };
-  });
   // public routes
-  // fastify.post('/user/create', createUser);
-  // fastify.post('/user/loginWithEmail', loginWithEmail);
-  // // private routes
-  // fastify.post('/user/me', { preHandler: auth }, me);
-  // fastify.post('/user/update', { preHandler: auth }, updateUser);
-  // fastify.post('/user/delete', { preHandler: auth }, deleteUser);
-  // fastify.post('/user/getUserById', { preHandler: auth }, getUserById);
-  // fastify.post('/user/getUserByEmail', { preHandler: auth }, getUserByEmail);
+  fastify.post(userPaths.createUser, createUser);
+  fastify.post(userPaths.loginWithEmail, loginWithEmail);
+  // private routes
+  fastify.post(userPaths.me, { preHandler: auth }, me);
+  fastify.post(userPaths.updateUser, { preHandler: auth }, updateUser);
+  fastify.post(
+    userPaths.archiveByUserId,
+    { preHandler: auth },
+    archiveByUserId
+  );
+  fastify.post(userPaths.getUserById, { preHandler: auth }, getUserById);
+  fastify.post(userPaths.getUserByEmail, { preHandler: auth }, getUserByEmail);
 }

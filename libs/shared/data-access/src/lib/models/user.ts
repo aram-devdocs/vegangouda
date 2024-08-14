@@ -1,108 +1,127 @@
-// import { query } from '../utils/query';
-import {
-  UserCreate,
-  UserDelete,
-  UserGet,
-  UserGetByEmail,
-  UserGetByMobile,
-  UserProtected,
-  UserUnprotected,
-  UserUpdate,
-} from '@vegangouda/shared/types';
-
-const query = async ({ text, values }: { text: string; values: any[] }) => {
-  // create mock query function
-  return { rows: [{ user_id: '1' }] };
-};
+import { user, Prisma, PrismaClient } from '@prisma/client';
+import { track, archive } from '../utils';
+import { AuthToken } from '@vegangouda/shared/types';
+const prisma = new PrismaClient();
 
 export const User = {
-  async findByUserId({ user_id }: UserGet) {
-    const res = await query({
-      text: `SELECT * FROM users WHERE user_id = $1`,
-      values: [user_id],
+  async findByUserId(
+    user_id: user['user_id']
+  ): Promise<Omit<user, 'password'> | null> {
+    const res = await prisma.user.findUnique({
+      omit: {
+        password: true,
+      },
+      where: { user_id },
     });
 
-    if (!res.rows[0]) {
-      throw new Error(`User with user_id: ${user_id} not found`);
-    }
-    return res.rows[0] as UserProtected;
-  },
-  async findByEmail({ email }: UserGetByEmail) {
-    const res = await query({
-      text: `SELECT * FROM users WHERE email = $1`,
-      values: [email],
-    });
-
-    return res.rows[0] as UserProtected | null;
+    return res ?? null;
   },
 
-  async findByMobile({ mobile }: UserGetByMobile) {
-    const res = await query({
-      text: `SELECT * FROM users WHERE mobile = $1`,
-      values: [mobile],
+  async findByEmail(
+    email: user['email']
+  ): Promise<Omit<user, 'password'> | null> {
+    const res = await prisma.user.findUnique({
+      omit: {
+        password: true,
+      },
+      where: { email },
     });
 
-    return res.rows[0] as UserProtected | null;
+    return res ?? null;
   },
 
-  async findByEmailWithPassword({ email }: UserGetByEmail) {
-    const res = await query({
-      text: `SELECT * FROM users WHERE email = $1`,
-      values: [email],
+  async findByMobile(
+    mobile: user['mobile']
+  ): Promise<Omit<user, 'password'> | null> {
+    const res = await prisma.user.findUnique({
+      omit: {
+        password: true,
+      },
+      where: { mobile },
     });
 
-    if (!res.rows[0]) {
+    return res ?? null;
+  },
+
+  async findByEmailWithPassword(email: user['email']): Promise<user> {
+    const res = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!res) {
       throw new Error(`User with email: ${email} not found`);
     }
 
-    console.log('res.rows[0]', res.rows[0].user_id);
-    return res.rows[0] as UserUnprotected;
+    return res;
   },
 
-  async create({ email, password, firstName, lastName, mobile }: UserCreate) {
-    const res = await query({
-      text: `INSERT INTO users (email, password, firstName, lastName, mobile) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      values: [email, password, firstName, lastName, mobile],
+  async create(args: Prisma.userCreateArgs): Promise<user> {
+    const { created_at, created_by } = track(null);
+    const { data } = args;
+    const res = await prisma.user.create({
+      data: {
+        ...data,
+        created_by,
+        created_at,
+      },
     });
 
-    if (!res.rows[0]) {
-      throw new Error(`User not created`);
-    }
-
-    return res.rows[0] as UserProtected;
+    return res;
   },
 
-  async update({
-    user_id,
-    email,
-    password,
-    firstName,
-    lastName,
-    mobile,
-  }: UserUpdate) {
-    const res = await query({
-      text: `UPDATE users SET email = $1, password = $2, firstName = $3, lastName = $4, mobile = $5 WHERE user_id = $6 RETURNING *`,
-      values: [email, password, firstName, lastName, mobile, user_id],
+  async update(args: Prisma.userUpdateArgs): Promise<user> {
+    const { updated_at, updated_by } = track(null);
+    const { data, where } = args;
+    const res = await prisma.user.update({
+      where,
+      data: {
+        ...data,
+        updated_at,
+        updated_by,
+      },
     });
 
-    if (!res.rows[0]) {
-      throw new Error(`User not updated`);
-    }
-
-    return res.rows[0] as UserProtected;
+    return res;
   },
 
-  async delete({ user_id }: UserDelete) {
-    // CODEBASE RULE: Archived is a soft delete
-    const res = await query({
-      text: `UPDATE users SET archived = true WHERE user_id = $1 RETURNING *`,
-      values: [user_id],
+  async updateByUserId(
+    user_id: user['user_id'],
+    data: Prisma.userUpdateInput,
+    auth: AuthToken
+  ): Promise<Omit<user, 'password'>> {
+    const { updated_at, updated_by } = track(auth.user_id);
+
+    const res = await prisma.user.update({
+      where: { user_id },
+      omit: {
+        password: true,
+      },
+      data: {
+        ...data,
+        updated_at,
+        updated_by,
+      },
     });
 
-    if (!res.rows[0]) {
-      throw new Error(`User not deleted`);
-    }
+    return res;
+  },
 
-    return res.rows[0] as UserProtected;
+  async archiveByUserId(
+    user_id: user['user_id'],
+    auth: AuthToken
+  ): Promise<Omit<user, 'password'>> {
+    const { archived_at, archived_by } = archive(auth.user_id);
+    const res = await prisma.user.update({
+      where: { user_id },
+      omit: {
+        password: true,
+      },
+      data: { archived: true, archived_at, archived_by },
+    });
+
+    return res;
   },
 };
+
+// Disconnect from Prisma after each request
+prisma.$disconnect();

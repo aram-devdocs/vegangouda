@@ -1,37 +1,19 @@
 import { User } from '../models/user';
 import {
   validateEmail,
-  //   validateMobile,
   validatePassword,
 } from '@vegangouda/shared/utils-validation';
 import * as bcrypt from 'bcrypt';
-import {
-  userCreateSchema,
-  userUpdateSchema,
-  emailLoginSchema,
-  //   mobileLoginSchema,
-} from '@vegangouda/shared/types';
-import {
-  EmailLogin,
-  MeInput,
-  TokenReturn,
-  UserCreate,
-  UserDelete,
-  UserGet,
-  UserGetByEmail,
-  UserProtected,
-  UserUpdate,
-  //   LoginWithMobileInput,
-} from '@vegangouda/shared/types';
+import { AuthToken, TokenReturn } from '@vegangouda/shared/types';
+import { user, Prisma, PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 const jwtSecret = process.env.JWT_SECRET;
 const saltKey = process.env.SALT_KEY;
 export const UserService = {
-  async me(input: MeInput) {
+  async me(token: string): Promise<TokenReturn> {
     // see if input.token has a valid jwt that is both valid and not expired, if so return a fresh token
-
-    const { token } = input;
 
     const decoded = jwt.verify(token, jwtSecret);
 
@@ -40,7 +22,11 @@ export const UserService = {
     }
     const { email } = decoded as { email: string };
 
-    const user = await User.findByEmail({ email });
+    if (!email) {
+      throw new Error('Invalid token: Email not found');
+    }
+
+    const user = await User.findByEmail(email);
 
     if (!user) {
       throw new Error('User not found');
@@ -49,25 +35,20 @@ export const UserService = {
     return { token } as TokenReturn;
   },
 
-  async create(input: UserCreate) {
-    const validInput = await userCreateSchema.validateAsync(input);
-
-    if (!validInput) {
-      throw new Error('Invalid input');
-    }
-
+  async create(input: Prisma.userCreateInput): Promise<user> {
     const { email, password, mobile } = input;
 
-    // see if user exists with email or mobile
+    if (!email || !password || !mobile) {
+      throw new Error('Email, password, or mobile not provided');
+    }
 
-    const doesEmailExistOnUser = await User.findByEmail({ email });
-    console.log('doesEmailExistOnUser', doesEmailExistOnUser);
+    const doesEmailExistOnUser = await User.findByEmail(email);
 
     if (doesEmailExistOnUser) {
       throw new Error('Email already exists: ' + email);
     }
 
-    const doesMobileExistOnUser = await User.findByMobile({ mobile });
+    const doesMobileExistOnUser = await User.findByMobile(mobile);
 
     if (doesMobileExistOnUser) {
       throw new Error('Mobile already exists');
@@ -86,50 +67,53 @@ export const UserService = {
     const hashedPassword = await bcrypt.hash(password, Number(saltKey));
 
     const user = await User.create({
-      ...input,
-      password: hashedPassword,
+      data: {
+        ...input,
+        password: hashedPassword,
+      },
     });
 
-    return user as UserProtected;
+    return user;
   },
 
-  async update(input: UserUpdate) {
-    const validInput = await userUpdateSchema.validateAsync(input);
-
-    if (!validInput) {
-      throw new Error('Invalid input');
-    }
-
+  async updateByUserId(
+    user_id: user['user_id'],
+    input: Prisma.userUpdateInput,
+    auth: AuthToken
+  ): Promise<Omit<user, 'password'>> {
     const { email, password } = input;
 
-    const emailError = !validateEmail(email);
+    const emailError = !validateEmail(email as string);
     if (emailError) {
       throw new Error('Invalid email');
     }
 
-    const passwordError = !validatePassword(password);
+    const passwordError = !validatePassword(password as string);
     if (passwordError) {
       throw new Error('Invalid password');
     }
 
-    const hashedPassword = await bcrypt.hash(password, Number(saltKey));
+    const hashedPassword = await bcrypt.hash(
+      password as string,
+      Number(saltKey)
+    );
 
-    const user = await User.update({
-      ...input,
-      password: hashedPassword,
-    });
+    const user = await User.updateByUserId(
+      user_id,
+      {
+        ...input,
+        password: hashedPassword,
+      },
+      auth
+    );
 
-    return user as UserProtected;
+    return user;
   },
 
-  async loginWithEmail(input: EmailLogin) {
-    console.log('input', input);
-    const validInput = await emailLoginSchema.validateAsync(input);
-
-    if (!validInput) {
-      throw new Error('Invalid input');
-    }
-
+  async loginWithEmail(input: Pick<user, 'email' | 'password'>): Promise<{
+    user: user;
+    token: string;
+  }> {
     const { email, password } = input;
 
     const emailError = !validateEmail(email);
@@ -140,7 +124,7 @@ export const UserService = {
 
     // check password against db
 
-    const user = await User.findByEmailWithPassword({ email });
+    const user = await User.findByEmailWithPassword(email);
 
     const validPassword = await bcrypt.compare(password, user.password);
 
@@ -148,15 +132,9 @@ export const UserService = {
       throw new Error('Invalid password');
     }
 
-    console.log('jwtSecret', jwtSecret);
-    // generate jwt
     const token = jwt.sign(
       {
-        user_id: user.user_id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        mobile: user.mobile,
+        ...user,
       },
       jwtSecret,
       {
@@ -167,28 +145,33 @@ export const UserService = {
     // remove password
     delete user.password;
 
-    return { ...user, token } as UserProtected & TokenReturn;
+    return { token, user };
   },
 
   // TODO: Set up mobile code relationship
   //   async loginWithMobile(input: LoginWithMobileInput) {
   //   },
 
-  async findByUserId({ user_id }: UserGet) {
-    const user = await User.findByUserId({ user_id });
+  async findByUserId({
+    user_id,
+  }: Pick<Prisma.userWhereUniqueInput, 'user_id'>) {
+    const user = await User.findByUserId(user_id);
 
-    return user as UserProtected;
+    return user;
   },
 
-  async findByEmail({ email }: UserGetByEmail) {
-    const user = await User.findByEmail({ email });
+  async findByEmail({ email }: Pick<Prisma.userWhereUniqueInput, 'email'>) {
+    const user = await User.findByEmail(email);
 
-    return user as UserProtected;
+    return user;
   },
 
-  async delete({ user_id }: UserDelete) {
-    const user = await User.delete({ user_id });
+  async archive(
+    user_id: user['user_id'],
+    auth: AuthToken
+  ): Promise<Omit<user, 'password'>> {
+    const user = await User.archiveByUserId(user_id, auth);
 
-    return user as UserProtected;
+    return user;
   },
 };
