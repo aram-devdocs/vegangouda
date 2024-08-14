@@ -10,14 +10,10 @@ interface EmailLoginProps {
   onSubmit: (
     credentials: Pick<Prisma.userCreateInput, 'email' | 'password'>
   ) => void;
+  isPending: boolean;
 }
 
-const defaultErrorStates = {
-  email: false,
-  password: false,
-};
-
-export const EmailLogin = ({ onSubmit }: EmailLoginProps) => {
+export const EmailLogin = ({ onSubmit, isPending }: EmailLoginProps) => {
   const {
     control,
     handleSubmit,
@@ -70,6 +66,7 @@ export const EmailLogin = ({ onSubmit }: EmailLoginProps) => {
             onSubmit(data);
           })}
           label="Login"
+          loading={isPending}
         />
       </Stack>
     </Card>

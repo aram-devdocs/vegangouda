@@ -1,4 +1,7 @@
-export const userPaths = {
+import { createPaths } from './types';
+
+
+const paths = {
   createUser: '/user/create',
   loginWithEmail: '/user/login-with-email',
   me: '/user/me',
@@ -7,4 +10,6 @@ export const userPaths = {
   getUserById: '/user/get-user-by-id',
   getUserByEmail: '/user/get-user-by-email',
   getAllUsers: '/user/get-all-users',
-};
+} as const;
+
+export const userPaths = createPaths(paths);

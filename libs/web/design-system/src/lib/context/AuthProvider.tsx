@@ -5,23 +5,15 @@ import { PageLoader } from '@vegangouda/web/shared-components';
 import { userResolver } from '@vegangouda/web/data-access';
 import { user } from '@prisma/client';
 interface AuthContextProps {
-  login: (
-    email: string,
-    password: string
-  ) => Promise<{
-    user: user;
-    token: string;
-  } | null>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
-  login: async () => {
-    return null;
-  },
   logout: () => Promise.resolve(),
   isAuthenticated: false,
+  setIsAuthenticated: () => {},
 });
 
 export const AuthProvider = ({ children }: FuncProviderProps) => {
@@ -57,29 +49,6 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
     }
   }, []);
 
-  const login = async (
-    email: string,
-    password: string
-  ): Promise<{
-    user: user;
-    token: string;
-  } | null> => {
-    const res = await userResolver
-      .loginWithEmail({ email, password })
-      .catch((error) => {
-        console.log(error);
-        setIsAuthenticated(false);
-        throw error;
-      });
-
-    if (res) {
-      localStorage.setItem('access_token', res.token);
-      setIsAuthenticated(true);
-    }
-
-    return res || null;
-  };
-
   const logout = async () => {
     try {
       // Remove the token from local storage
@@ -99,7 +68,9 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
   }
 
   return (
-    <AuthContext.Provider value={{ login, logout, isAuthenticated }}>
+    <AuthContext.Provider
+      value={{ setIsAuthenticated, logout, isAuthenticated }}
+    >
       {children}
     </AuthContext.Provider>
   );

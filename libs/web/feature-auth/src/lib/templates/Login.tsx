@@ -8,12 +8,12 @@ import {
 import { useState } from 'react';
 import { EmailLogin } from '../components';
 
-import { useLogin } from '../hooks';
-
-export const Login = () => {
+export interface LoginProps {
+  onSubmitEmail: (data: { email: string; password: string }) => void;
+  isPending: boolean;
+}
+export const Login = ({ onSubmitEmail, isPending }: LoginProps) => {
   const [isEmailLogin, setIsEmailLogin] = useState<boolean>(true);
-
-  const { onSubmitEmail } = useLogin();
 
   return (
     <Card
@@ -32,7 +32,7 @@ export const Login = () => {
       <Box sx={{ ...animationProps.smooth }}>
         <Typography>Login</Typography>
         {isEmailLogin ? (
-          <EmailLogin onSubmit={onSubmitEmail} />
+          <EmailLogin onSubmit={onSubmitEmail}  isPending={isPending}/>
         ) : (
           <Typography>Not Email Login</Typography>
         )}

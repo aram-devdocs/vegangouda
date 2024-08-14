@@ -17,17 +17,25 @@ const adminAuth = useMiddleware({ role: 'ADMIN' });
 
 export default async function (fastify: FastifyInstance) {
   // public routes
-  fastify.post(userPaths.createUser, createUser);
-  fastify.post(userPaths.loginWithEmail, loginWithEmail);
+  fastify.post(userPaths.createUser.path, createUser);
+  fastify.post(userPaths.loginWithEmail.path, loginWithEmail);
   // private routes
-  fastify.post(userPaths.me, { preHandler: auth }, me);
-  fastify.post(userPaths.updateUser, { preHandler: auth }, updateUser);
+  fastify.post(userPaths.me.path, { preHandler: auth }, me);
+  fastify.post(userPaths.updateUser.path, { preHandler: auth }, updateUser);
   fastify.post(
-    userPaths.archiveByUserId,
+    userPaths.archiveByUserId.path,
     { preHandler: auth },
     archiveByUserId
   );
-  fastify.post(userPaths.getUserById, { preHandler: auth }, getUserById);
-  fastify.post(userPaths.getUserByEmail, { preHandler: auth }, getUserByEmail);
-  fastify.get(userPaths.getAllUsers, { preHandler: adminAuth }, getAllUsers);
+  fastify.post(userPaths.getUserById.path, { preHandler: auth }, getUserById);
+  fastify.post(
+    userPaths.getUserByEmail.path,
+    { preHandler: auth },
+    getUserByEmail
+  );
+  fastify.get(
+    userPaths.getAllUsers.path,
+    { preHandler: adminAuth },
+    getAllUsers
+  );
 }
