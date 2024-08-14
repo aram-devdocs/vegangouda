@@ -10,8 +10,10 @@ const {
   archiveByUserId,
   getUserById,
   getUserByEmail,
+  getAllUsers,
 } = UserController;
 const auth = useMiddleware({});
+const adminAuth = useMiddleware({ role: 'ADMIN' });
 
 export default async function (fastify: FastifyInstance) {
   // public routes
@@ -27,4 +29,5 @@ export default async function (fastify: FastifyInstance) {
   );
   fastify.post(userPaths.getUserById, { preHandler: auth }, getUserById);
   fastify.post(userPaths.getUserByEmail, { preHandler: auth }, getUserByEmail);
+  fastify.get(userPaths.getAllUsers, { preHandler: adminAuth }, getAllUsers);
 }

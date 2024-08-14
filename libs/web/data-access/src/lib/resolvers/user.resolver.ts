@@ -33,4 +33,9 @@ export const userResolver = {
     const { data } = await axios.post(userPaths.archiveByUserId, { user_id });
     return data;
   },
+
+  async getAllUsers(): Promise<Omit<user, 'password'>[]> {
+    const { data } = await axios.get(userPaths.getAllUsers);
+    return data;
+  },
 };

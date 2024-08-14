@@ -117,6 +117,18 @@ async function getUserByEmail(
   }
 }
 
+async function getAllUsers(
+  request: FastifyRequestWithAuth,
+  reply: FastifyReply
+) {
+  try {
+    const users = await UserService.getAllUsers();
+    reply.send(users);
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
 export const UserController = {
   me,
   createUser,
@@ -125,4 +137,5 @@ export const UserController = {
   getUserById,
   getUserByEmail,
   loginWithEmail,
+  getAllUsers,
 };

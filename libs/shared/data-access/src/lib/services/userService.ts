@@ -176,4 +176,9 @@ export const UserService = {
 
     return user;
   },
+
+  async getAllUsers(): Promise<Omit<user, 'password'>[]> {
+    const users = await User.findAll();
+    return users;
+  },
 };
