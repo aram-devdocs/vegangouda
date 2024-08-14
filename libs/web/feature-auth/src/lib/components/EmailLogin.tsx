@@ -1,21 +1,15 @@
-import { EmailCredentials } from '../constants/type';
-import { useState } from 'react';
-import {
-  TextField,
-  Button,
-  Box,
-  VisibilityIcon,
-  IconButton,
-} from '@vegangouda/web/design-system';
-import { authButtonStyleProps } from '../constants/style';
-import { useToast } from '@vegangouda/web/design-system';
+import { Stack, TextField, Button, Card } from '@vegangouda/web/design-system';
+import { useForm, Controller } from 'react-hook-form';
 import {
   validateEmail,
   validatePassword,
 } from '@vegangouda/shared/utils-validation';
+import { Prisma } from '@prisma/client';
 
 interface EmailLoginProps {
-  onSubmit: (credentials: EmailCredentials) => void;
+  onSubmit: (
+    credentials: Pick<Prisma.userCreateInput, 'email' | 'password'>
+  ) => void;
 }
 
 const defaultErrorStates = {
@@ -24,96 +18,60 @@ const defaultErrorStates = {
 };
 
 export const EmailLogin = ({ onSubmit }: EmailLoginProps) => {
-  const [credentials, setCredentials] = useState<EmailCredentials>({
-    email: '',
-    password: '',
-  });
-  const [errorStates, setErrorStates] = useState(defaultErrorStates);
-
-  const { showToast } = useToast();
-
-  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setCredentials({ ...credentials, [name]: value });
-  };
-
-  const handleSubmit = () => {
-    const [validEmail, validPassword] = [
-      validateEmail(credentials.email),
-      validatePassword(credentials.password),
-    ];
-    setErrorStates({
-      email: !validEmail,
-      password: !validPassword,
-    });
-
-    if (!validEmail || !validPassword) {
-      showToast({
-        type: 'error',
-        message: 'Invalid email or password',
-      });
-      return;
-    }
-
-    onSubmit(credentials);
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Pick<Prisma.userCreateInput, 'email' | 'password'>>();
 
   return (
-    <Box
+    <Card
+      title="Login"
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
+        padding: '1rem',
       }}
     >
-      <TextField
-        label="Email"
-        name="email"
-        value={credentials.email}
-        onChange={handleInputChange}
-        margin="normal"
-        fullWidth
-        error={errorStates.email}
-      />
-      <TextField
-        label="Password"
-        name="password"
-        value={credentials.password}
-        onChange={handleInputChange}
-        margin="normal"
-        type={isPasswordVisible ? 'text' : 'password'}
-        fullWidth
-        error={errorStates.password}
-        InputProps={{
-          endAdornment: (
-            <IconButton
-              onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-              sx={{
-                ...authButtonStyleProps,
-              }}
-            >
-              <VisibilityIcon
-                sx={{
-                  color: isPasswordVisible
-                    ? 'on.background.highEmphasis'
-                    : 'black',
-                }}
-              />
-            </IconButton>
-          ),
-        }}
-      />
-      <Button
-        sx={{
-          marginTop: '16px',
-        }}
-        label="Login"
-        variant="contained"
-        onClick={handleSubmit}
-      />
-    </Box>
+      <Stack spacing={2}>
+        <Controller
+          name="email"
+          control={control}
+          rules={{
+            required: 'Email is required',
+            validate: validateEmail,
+          }}
+          render={({ field }) => (
+            <TextField
+              label="Email"
+              {...field}
+              error={!!errors.email}
+              helperText={errors.email ? 'Invalid email address' : ''}
+            />
+          )}
+        />
+        <Controller
+          name="password"
+          control={control}
+          rules={{
+            required: 'Password is required',
+            validate: validatePassword,
+          }}
+          render={({ field }) => (
+            <TextField
+              label="Password"
+              type="password"
+              {...field}
+              error={!!errors.password}
+              helperText={errors.password ? 'Invalid password' : ''}
+            />
+          )}
+        />
+        <Button
+          onClick={handleSubmit((data) => {
+            onSubmit(data);
+          })}
+          label="Login"
+        />
+      </Stack>
+    </Card>
   );
 };

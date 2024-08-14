@@ -6,9 +6,9 @@ import {
   Box,
 } from '@vegangouda/web/design-system';
 import { useState } from 'react';
-import { EmailLogin } from './EmailLogin';
+import { EmailLogin } from '../components';
 
-import { useLogin } from '../hooks/useLogin';
+import { useLogin } from '../hooks';
 
 export const Login = () => {
   const [isEmailLogin, setIsEmailLogin] = useState<boolean>(true);

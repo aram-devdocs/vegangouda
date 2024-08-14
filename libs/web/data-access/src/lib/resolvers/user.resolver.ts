@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { userPaths } from '../paths';
+import { userPaths } from '@vegangouda/shared/types';
 import { user, Prisma } from '@prisma/client';
-import { TokenReturn } from '@vegangouda/shared/types';
 
 export const userResolver = {
   async createUser(input: Prisma.userCreateInput): Promise<user> {
@@ -15,7 +14,9 @@ export const userResolver = {
     const { data } = await axios.post(userPaths.loginWithEmail, input);
     return data;
   },
-  async me(token: string): Promise<TokenReturn> {
+  async me(token: string): Promise<{
+    token: string;
+  }> {
     const { data } = await axios.post(userPaths.me, { token });
     return data;
   },

@@ -4,7 +4,7 @@ import {
   validatePassword,
 } from '@vegangouda/shared/utils-validation';
 import * as bcrypt from 'bcrypt';
-import { AuthToken, TokenReturn } from '@vegangouda/shared/types';
+import { AuthToken } from '@vegangouda/shared/types';
 import { user, Prisma, PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
@@ -12,7 +12,9 @@ import * as jwt from 'jsonwebtoken';
 const jwtSecret = process.env.JWT_SECRET;
 const saltKey = process.env.SALT_KEY;
 export const UserService = {
-  async me(token: string): Promise<TokenReturn> {
+  async me(token: string): Promise<{
+    token: string;
+  }> {
     // see if input.token has a valid jwt that is both valid and not expired, if so return a fresh token
 
     const decoded = jwt.verify(token, jwtSecret);
@@ -32,7 +34,7 @@ export const UserService = {
       throw new Error('User not found');
     }
 
-    return { token } as TokenReturn;
+    return { token };
   },
 
   async create(input: Prisma.userCreateInput): Promise<user> {

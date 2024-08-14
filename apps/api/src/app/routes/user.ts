@@ -1,10 +1,7 @@
 import { FastifyInstance } from 'fastify';
 
-import {
-  UserController,
-  useMiddleware,
-  userPaths,
-} from '@vegangouda/shared/data-access';
+import { UserController, useMiddleware } from '@vegangouda/shared/data-access';
+import { userPaths } from '@vegangouda/shared/types';
 const {
   createUser,
   loginWithEmail,
