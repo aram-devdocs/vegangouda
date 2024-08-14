@@ -17,6 +17,13 @@ RUN if [ ! -d "./node_modules" ]; then \
 # Copy the entire project to the container
 COPY . .
 
+
+# install prisma cli globally
+RUN npm install -g prisma
+
+# Run the Prisma CLI to generate the Prisma Client
+RUN npm run prisma:generate
+
 # Build the app
 RUN npx nx run web:build --configuration=production
 
@@ -36,6 +43,7 @@ RUN echo 'server { \
 
 # Copy the built app from the previous stage
 COPY --from=build /app/dist/apps/web /usr/share/nginx/html
+
 
 # Expose port 80 for the NGINX server
 EXPOSE 80

@@ -15,10 +15,14 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@vegangouda/shared/data-access": [
+        "libs/shared/data-access/src/index.ts"
+      ],
       "@vegangouda/shared/types": ["libs/shared/types/src/index.ts"],
       "@vegangouda/shared/utils-validation": [
         "libs/shared/utils-validation/src/index.ts"
       ],
+      "@vegangouda/web/data-access": ["libs/web/data-access/src/index.ts"],
       "@vegangouda/web/design-system": ["libs/web/design-system/src/index.ts"],
       "@vegangouda/web/feature-auth": ["libs/web/feature-auth/src/index.ts"],
       "@vegangouda/web/feature-nav": ["libs/web/feature-nav/src/index.ts"],

@@ -9,16 +9,21 @@ COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN if [ ! -d "./node_modules" ]; then \
-      npm install; \
-    else \
-      npm ci; \
-    fi
+  npm install; \
+  else \
+  npm ci; \
+  fi
+
+
 
 # Copy the entire repository to the container
 COPY . .
 
-# Build the Fastify app // TODO: use NODE_ENV to determine the configuration
-RUN npx nx run api:build --configuration=production 
+# Install prisma cli globally
+RUN npm install -g prisma
+
+# Build the Fastify app
+RUN npx nx run api:build --configuration=production
 
 # Step 2: Create the production image
 FROM node:20 AS production
@@ -33,8 +38,18 @@ COPY --from=build /app/package.json /app/package-lock.json ./
 # Install only production dependencies
 RUN npm install --production
 
+# Copy the prisma directory
+COPY --from=build /app/prisma /app/prisma
+
+# Copy the entrypoint script
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 # Expose the port that your Fastify app runs on
 EXPOSE 3000
+
+# Use the entrypoint script to handle database checks and run migrations
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Define the command to start your Fastify app
 CMD ["node", "main.js"]

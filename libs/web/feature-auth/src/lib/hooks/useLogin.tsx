@@ -1,31 +1,33 @@
 import { useAuthContext } from '@vegangouda/web/design-system';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useToast } from '@vegangouda/web/design-system';
-import { EmailLogin } from '@vegangouda/shared/types';
+import { Prisma, user } from '@prisma/client';
 
 export const useLogin = () => {
   const { login } = useAuthContext();
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { showToast } = useToast();
+  const { showErrorToast, showSuccessToast } = useToast();
 
-  const onSubmitEmail = (credentials: EmailLogin) => {
-    const { email, password } = credentials;
-    login(email, password)
-      .then(() => {
-        navigate(state?.path || '/');
-        showToast({
-          type: 'success',
-          message: 'Login successful',
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        showToast({
-          type: 'error',
-          message: error?.response?.data?.message || 'Login failed',
-        });
-      });
+  const onSubmitEmail = async (
+    data: Pick<Prisma.userCreateInput, 'email' | 'password'>
+  ) => {
+    const { email, password } = data;
+    if (!email || !password) {
+      showErrorToast('Email and password are required.');
+      return;
+    }
+
+    const user = await login(email, password).catch((error) => {
+      showErrorToast(
+        error.response?.data?.message || 'An error occurred. Please try again.'
+      );
+    });
+
+    if (user) {
+      navigate('/', { state: { from: state?.from } });
+      showSuccessToast('Login successful.');
+    }
   };
 
   return {

@@ -2,14 +2,24 @@ import React, { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { FuncProviderProps, baseURL, defaultTimeout } from '../constants';
 import { PageLoader } from '@vegangouda/web/shared-components';
+import { userResolver } from '@vegangouda/web/data-access';
+import { user } from '@prisma/client';
 interface AuthContextProps {
-  login: (email: string, password: string) => Promise<void>;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{
+    user: user;
+    token: string;
+  } | null>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
-  login: () => Promise.resolve(),
+  login: async () => {
+    return null;
+  },
   logout: () => Promise.resolve(),
   isAuthenticated: false,
 });
@@ -47,28 +57,27 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
-    try {
-      // Call the API to get the access token
-      const response = await axios.post('/user/loginWithEmail', {
-        email,
-        password,
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<{
+    user: user;
+    token: string;
+  } | null> => {
+    const res = await userResolver
+      .loginWithEmail({ email, password })
+      .catch((error) => {
+        console.log(error);
+        setIsAuthenticated(false);
+        throw error;
       });
 
-      console.log(response.data);
-
-      // Save the token to local storage
-      localStorage.setItem('access_token', response.data.token);
-
-      // Set authenticated to true
+    if (res) {
+      localStorage.setItem('access_token', res.token);
       setIsAuthenticated(true);
-    } catch (error) {
-      // Handle login error here, show error message, etc.
-      console.error('Login failed:', error);
-
-      setIsAuthenticated(false);
-      throw error;
     }
+
+    return res || null;
   };
 
   const logout = async () => {

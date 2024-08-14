@@ -3,9 +3,6 @@ import {
   TextField,
   Button,
   MenuItem,
-  FormControlLabel,
-  Radio,
-  Checkbox,
 } from '../../../';
 import { joiResolver } from '@hookform/resolvers/joi';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';

@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "user" ALTER COLUMN "created_by" DROP NOT NULL,
+ALTER COLUMN "updated_at" DROP NOT NULL,
+ALTER COLUMN "updated_by" DROP NOT NULL,
+ALTER COLUMN "archived_at" DROP NOT NULL,
+ALTER COLUMN "archived_by" DROP NOT NULL;

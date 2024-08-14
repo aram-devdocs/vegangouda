@@ -1,10 +1,7 @@
 import { LayoutContainer, Typography } from '@vegangouda/web/design-system';
-import { Login } from '../components/Login';
+import { Login } from '../templates';
 
 export const LoginPage = () => {
-  // how should I wrap the Login card on the page so that it is centered?
-  // Follow MUI standards and best practices
-
   return (
     <LayoutContainer
       sx={{

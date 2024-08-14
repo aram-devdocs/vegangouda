@@ -20,3 +20,31 @@ server.listen({ port, host }, (err) => {
     console.log(`[ ready ] http://${host}:${port}`);
   }
 });
+
+// close on SIGINT
+
+process.on('SIGINT', async () => {
+  await server.close();
+  process.exit(0);
+});
+
+// close on SIGTERM
+
+process.on('SIGTERM', async () => {
+  await server.close();
+  process.exit(0);
+});
+
+// close on uncaughtException
+
+process.on('uncaughtException', async () => {
+  await server.close();
+  process.exit(1);
+});
+
+// close on unhandledRejection
+
+process.on('unhandledRejection', async () => {
+  await server.close();
+  process.exit(1);
+});
