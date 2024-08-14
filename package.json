@@ -21,7 +21,6 @@
     "start:portainer": "dotenv --file .env.local -- docker stack deploy -c docker-compose.portainer.yml portainer",
     "stop:portainer": "dotenv --file .env.local -- docker stack rm portainer",
     "storybook": "nx run web:storybook --serve",
-    "generate-types": "ts-node tools/type-generator/index.ts",
     "prisma:migrate": "echo 'WARNING: This will potentially drop columns. Are you sure you want to run this? Use `npm run prisma:migrate:create-only` to generate the file before running to avoid data loss. (y/n)' && read -r && [[ $REPLY == 'y' ]] && npx prisma migrate dev",
     "prisma:generate": "npx prisma generate",
     "prisma:studio": "npx prisma studio",
@@ -35,7 +34,8 @@
     "_:update:swarm": "echo 'Deprecated: Use Portainer to update services. Original commands: npm run update:swarm:api && npm run update:swarm:web && npm run update:swarm:db'",
     "_:update:swarm:api": "echo 'Deprecated: Use Portainer to update services. Original command: dotenv --file .env.local -- docker service update --image $REGISTRY_IP:5000/vegangouda-api:latest vegangouda_api'",
     "_:update:swarm:web": "echo 'Deprecated: Use Portainer to update services. Original command: dotenv --file .env.local -- docker service update --image $REGISTRY_IP:5000/vegangouda-web:latest vegangouda_web'",
-    "_:update:swarm:db": "echo 'Deprecated: Use Portainer to update services. Original command: dotenv --file .env.local -- docker service update --image postgres:latest vegangouda_db'"
+    "_:update:swarm:db": "echo 'Deprecated: Use Portainer to update services. Original command: dotenv --file .env.local -- docker service update --image postgres:latest vegangouda_db'",
+    "_:generate-types": "echo 'Deprecated: Use schema.prisma to manage types. Original Command: `nx generate @vegangouda/shared-types:generate`'"
   },
   "private": true,
   "dependencies": {

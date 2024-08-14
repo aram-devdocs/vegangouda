@@ -13,6 +13,13 @@ This README provides a comprehensive guide on setting up, starting, and running 
   - [Configuring and Using a Private Docker Registry](#3-configuring-and-using-a-private-docker-registry)
   - [Deprecated: Manual Docker Swarm Commands](#4-deprecated-manual-docker-swarm-commands)
   - [Additional Commands](#5-additional-commands)
+- [Prisma Setup, Usage, and Best Practices](#prisma-setup-usage-and-best-practices)
+  - [Setting Up Prisma](#1-setting-up-prisma)
+  - [Handling Model Changes and Migrations](#2-handling-model-changes-and-migrations)
+  - [Using Prisma's Type Safety Features](#3-using-prismas-type-safety-features)
+  - [Using Prisma Studio](#4-using-prisma-studio)
+  - [Troubleshooting Prisma](#5-troubleshooting-prisma)
+  - [Best Practices](#6-best-practices)
 - [Troubleshooting Docker Swarm and Registry](#troubleshooting-docker-swarm-and-registry)
   - [Registry Issues](#registry-issues)
   - [Swarm Service Issues](#swarm-service-issues)
@@ -294,7 +301,153 @@ npm run update:swarm
 npm run storybook
 ```
 
-- **Generate TypeScript Types:**
+## Prisma Setup, Usage, and Best Practices
+
+This section provides instructions on setting up and using Prisma in your project. Prisma is a next-generation ORM that provides a powerful and type-safe way to interact with your database.
+
+### 1. Setting Up Prisma
+
+To get started with Prisma in a new project and how we got set up here:
+
+1. **Install Prisma**:
+   If you haven't already installed Prisma, add it to your project:
+
+```bash
+npm install @prisma/client
+npm install prisma --save-dev
+```
+
+2. **Initialize Prisma**:
+   Initialize Prisma in your project. This will create a `prisma` directory with a `schema.prisma` file:
+
+```bash
+npx prisma init
+```
+
+    Update the `schema.prisma` file with your database configuration and models.
+
+3. **Generate Prisma Client**:
+   After configuring your models in `schema.prisma`, run the following command to generate the Prisma Client:
+
+```bash
+npm run prisma:generate
+```
+
+### 2. Handling Model Changes and Migrations
+
+Prisma uses migrations to apply changes to your database schema.
+
+1. **Creating a Migration**:
+   When you make changes to your models in `schema.prisma`, create a migration:
+
+```bash
+npm run prisma:migrate:create-only
+```
+
+    This command creates a migration file without applying it. Review the generated migration before applying it to avoid unintended changes.
+
+2. **Applying a Migration**:
+   To apply the migration, use:
+
+```bash
+npm run prisma:migrate
+```
+
+    **Warning:** This can potentially drop columns or cause data loss. Ensure that you have reviewed the migration file before running this command.
+
+3. **Introspecting an Existing Database**:
+   If you are working with an existing database, you can introspect the current schema and update your `schema.prisma`:
+
+```bash
+npm run prisma:introspect
+```
+
+4. **Formatting Prisma Schema**:
+   To keep your `schema.prisma` file clean and formatted, use:
+
+```bash
+npm run prisma:format
+```
+
+### 3. Using Prisma's Type Safety Features
+
+Prisma provides strong type safety features that ensure your queries are correct at compile time.
+
+1. **Type-Safe Queries**:
+   When you use Prisma Client in your code, TypeScript provides autocomplete and type checking. This helps prevent common mistakes such as using incorrect field names or passing the wrong types.
+
+   Example:
+
+```typescript
+const user = await prisma.user.findUnique({
+  where: { id: 1 },
+});
+```
+
+    Type safety ensures that if you try to access a field that doesn't exist, TypeScript will throw an error during compilation.
+
+2. **Auto-Generated Types**:
+   Prisma generates types based on your schema, which you can import and use throughout your application:
+
+```typescript
+import { PrismaClient, User } from '@prisma/client';
+const prisma = new PrismaClient();
+```
+
+    These types are automatically updated whenever you run `npm run prisma:generate`.
+
+### 4. Using Prisma Studio
+
+Prisma Studio is a visual editor for your database. It allows you to browse and edit data in your database directly from your browser.
+
+1. **Starting Prisma Studio**:
+   To start Prisma Studio, run:
+
+```bash
+npm run prisma:studio
+```
+
+    This will open Prisma Studio in your browser, where you can interact with your database records.
+
+2. **Editing Data**:
+   Prisma Studio provides an easy-to-use interface for editing records. Changes made through Prisma Studio are applied directly to your database.
+
+### 5. Troubleshooting Prisma
+
+Common issues you might encounter when using Prisma and how to resolve them:
+
+1. **Database Connection Issues**:
+   If Prisma can't connect to your database, ensure your database URL in `schema.prisma` is correct and that the database server is running.
+
+2. **Migration Conflicts**:
+   If you encounter conflicts when running migrations, review the migration file generated in the `prisma/migrations` directory. Ensure that changes are intentional and resolve any conflicts before applying the migration.
+
+3. **Schema Validation Errors**:
+   If you receive errors when running `prisma generate` or `prisma migrate`, check your `schema.prisma` file for syntax errors or invalid field definitions.
+
+   You can format your schema to help identify and resolve these errors:
+
+```bash
+npm run prisma:format
+```
+
+4. **Outdated Prisma Client**:
+   If your Prisma Client is outdated or doesn't reflect the latest schema changes, regenerate it:
+
+```bash
+npm run prisma:generate
+```
+
+### 6. Best Practices
+
+- **Use Type Safety**: Always rely on Prisma's type safety features to catch errors at compile time.
+- **Review Migrations**: Always review migration files before applying them to avoid data loss.
+- **Keep Prisma Client Up-to-Date**: After any schema changes, run `npm run prisma:generate` to ensure your Prisma Client is up-to-date.
+- **Regularly Back Up Your Database**: Before running migrations or making significant changes, ensure your database is backed up to prevent data loss.
+
+- **\_Generate TypeScript Types:**
+
+_Deprecated: The old version used Joi schemas to generate TypeScript types. The new version uses TypeORM entities to generate types. The command below is deprecated and should not be used. The new command is `npm run prisma:generate`._
 
 ```bash
 npm run generate-types
