@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import { _axios } from '@vegangouda/web/data-access';
+
 import { FuncProviderProps, baseURL, defaultTimeout } from '../constants';
 import { PageLoader } from '@vegangouda/web/shared-components';
 import { userResolver } from '@vegangouda/web/data-access';
@@ -29,10 +30,10 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const validateToken = async (token: string) => {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    _axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     try {
       // post /user/me to get fresh token
-      await axios.post('/user/me', { token });
+      await _axios.post('/user/me', { token });
       setIsAuthenticated(true);
     } catch (error) {
       console.log(error);
@@ -45,8 +46,8 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
 
   useEffect(() => {
     // Set axios defaults
-    axios.defaults.baseURL = baseURL;
-    axios.defaults.timeout = defaultTimeout;
+    // axios.defaults.baseURL = baseURL;
+    // axios.defaults.timeout = defaultTimeout;
 
     const token = localStorage.getItem('access_token');
     if (token) {
