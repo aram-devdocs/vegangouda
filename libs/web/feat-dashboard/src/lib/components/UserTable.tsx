@@ -1,11 +1,21 @@
-import { DataGrid, DataGridProps } from '@vegangouda/web/design-system';
+import { DataGrid, DataGridProps, Button } from '@vegangouda/web/design-system';
 import { user } from '@prisma/client';
-
 export interface UserTableProps {
   users: Omit<user, 'password'>[];
+  updateUserRole: (input: {
+    user_id: user['user_id'];
+    role: user['role'];
+  }) => void;
+  isPending: boolean;
+  loggedInUserId: user['user_id'];
 }
 
-export const UserTable = ({ users }: UserTableProps) => {
+export const UserTable = ({
+  users,
+  updateUserRole,
+  isPending,
+  loggedInUserId,
+}: UserTableProps) => {
   const props: DataGridProps<Omit<user, 'password'>> = {
     columns: [
       { field: 'user_id', headerName: 'ID', width: 150 },
@@ -25,11 +35,33 @@ export const UserTable = ({ users }: UserTableProps) => {
         field: 'actions',
         headerName: 'Actions',
         width: 150,
-        renderCell: () => <button>View</button>,
+        renderCell: (data) => {
+          const isAdmin = data.row.role === 'ADMIN';
+          return (
+            <Button
+              onClick={() =>
+                updateUserRole({
+                  user_id: data.row.user_id,
+                  role: isAdmin ? 'USER' : 'ADMIN',
+                })
+              }
+              label={`Update to ${isAdmin ? 'USER' : 'ADMIN'}`}
+              loading={isPending}
+              disabled={data.row.user_id === loggedInUserId}
+            />
+          );
+        },
       },
     ],
 
     rows: users,
+
+    sortModel: [
+      {
+        field: 'created_at',
+        sort: 'desc',
+      },
+    ],
   };
   return <DataGrid {...props} />;
 };

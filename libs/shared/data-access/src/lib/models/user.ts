@@ -123,6 +123,28 @@ export const User = {
     return res;
   },
 
+  async updateRole(
+    user_id: user['user_id'],
+    role: user['role'],
+    auth: AuthToken
+  ): Promise<Omit<user, 'password'>> {
+    const { updated_at, updated_by } = track(auth.user_id);
+
+    const res = await prisma.user.update({
+      where: { user_id },
+      omit: {
+        password: true,
+      },
+      data: {
+        role,
+        updated_at,
+        updated_by,
+      },
+    });
+
+    return res;
+  },
+
   async archiveByUserId(
     user_id: user['user_id'],
     auth: AuthToken

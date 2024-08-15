@@ -11,6 +11,7 @@ const {
   getUserById,
   getUserByEmail,
   getAllUsers,
+  updateUserRole,
 } = UserController;
 const auth = useMiddleware({});
 const adminAuth = useMiddleware({ role: 'ADMIN' });
@@ -37,5 +38,11 @@ export default async function (fastify: FastifyInstance) {
     userPaths.getAllUsers.path,
     { preHandler: adminAuth },
     getAllUsers
+  );
+
+  fastify.post(
+    userPaths.updateUserRole.path,
+    { preHandler: adminAuth },
+    updateUserRole
   );
 }

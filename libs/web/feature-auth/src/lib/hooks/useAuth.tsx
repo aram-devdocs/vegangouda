@@ -4,14 +4,15 @@ import { useToast } from '@vegangouda/web/design-system';
 import { Prisma, user } from '@prisma/client';
 import { userResolver } from '@vegangouda/web/data-access';
 import { userPaths } from '@vegangouda/shared/types';
-import { useMutation, QueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 
 export const useAuth = () => {
   const { setIsAuthenticated, setUser } = useAuthContext();
   const { state } = useLocation();
   const navigate = useNavigate();
   const { showErrorToast, showSuccessToast } = useToast();
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
   const useLogin = useMutation<
     { user: user; token: string },
@@ -25,6 +26,7 @@ export const useAuth = () => {
     },
     onSuccess: (data) => {
       localStorage.setItem('access_token', data.token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
       setIsAuthenticated(true);
       navigate(state?.from ? state.from : '/');
       showSuccessToast('Logged in successfully');
@@ -44,7 +46,6 @@ export const useAuth = () => {
     onSuccess: (data, input) => {
       showSuccessToast('User created successfully');
 
-      console.log('data', data);
       useLogin.mutate({
         email: data.email,
         password: input.password,

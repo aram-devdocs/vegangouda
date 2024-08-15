@@ -182,4 +182,13 @@ export const UserService = {
     const users = await User.findAll();
     return users;
   },
+
+  async updateUserRole(
+    user_id: user['user_id'],
+    role: user['role'],
+    auth: AuthToken
+  ): Promise<Omit<user, 'password'>> {
+    const user = await User.updateRole(user_id, role, auth);
+    return user;
+  },
 };

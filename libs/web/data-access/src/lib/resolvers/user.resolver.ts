@@ -41,4 +41,13 @@ export const userResolver = {
     const { data } = await axios.get(userPaths.getAllUsers.path);
     return data;
   },
+
+  async updateUserRole(input: {
+    user_id: user['user_id'];
+    role: 'ADMIN' | 'USER';
+  }): Promise<Omit<user, 'password'>> {
+
+    const { data } = await axios.post(userPaths.updateUserRole.path, input);
+    return data;
+  },
 };
