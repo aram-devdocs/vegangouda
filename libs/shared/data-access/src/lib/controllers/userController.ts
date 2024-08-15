@@ -117,6 +117,42 @@ async function getUserByEmail(
   }
 }
 
+async function getAllUsers(
+  request: FastifyRequestWithAuth,
+  reply: FastifyReply
+) {
+  try {
+    const users = await UserService.getAllUsers();
+    reply.send(users);
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+async function updateUserRole(
+  request: FastifyRequestWithAuth,
+  reply: FastifyReply
+) {
+  try {
+    const input = request.body as {
+      user_id: user['user_id'];
+      role: user['role'];
+    };
+
+    if (!input.user_id || !input.role) {
+      throw new Error('No user_id or role provided');
+    }
+    const user = await UserService.updateUserRole(
+      input.user_id,
+      input.role,
+      request.auth
+    );
+    reply.send(user);
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
 export const UserController = {
   me,
   createUser,
@@ -125,4 +161,6 @@ export const UserController = {
   getUserById,
   getUserByEmail,
   loginWithEmail,
+  getAllUsers,
+  updateUserRole,
 };

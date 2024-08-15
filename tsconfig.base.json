@@ -24,6 +24,9 @@
       ],
       "@vegangouda/web/data-access": ["libs/web/data-access/src/index.ts"],
       "@vegangouda/web/design-system": ["libs/web/design-system/src/index.ts"],
+      "@vegangouda/web/feat-dashboard": [
+        "libs/web/feat-dashboard/src/index.ts"
+      ],
       "@vegangouda/web/feature-auth": ["libs/web/feature-auth/src/index.ts"],
       "@vegangouda/web/feature-nav": ["libs/web/feature-nav/src/index.ts"],
       "@vegangouda/web/shared-components": [

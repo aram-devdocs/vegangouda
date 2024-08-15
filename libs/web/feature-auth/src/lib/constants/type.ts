@@ -9,11 +9,3 @@ export type MobileCredentials = {
 };
 
 export type LoginCredentials = EmailCredentials | MobileCredentials;
-
-export type RegisterUser = {
-  email: string;
-  mobile: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-};
