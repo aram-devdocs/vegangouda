@@ -29,9 +29,11 @@ export const useDashboard = () => {
 
   // add additional hooks here
   const queryLoading = useMemo(() => allUsersLoading, [allUsersLoading]);
+  const queryError = useMemo(() => allUsersError, [allUsersError]);
 
   return {
     allUsers,
     queryLoading,
+    queryError,
   };
 };

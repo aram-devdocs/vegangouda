@@ -8,23 +8,31 @@ interface AuthContextProps {
   logout: () => Promise<void>;
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  user: Omit<user, 'password'> | null;
+  setUser: React.Dispatch<React.SetStateAction<Omit<user, 'password'> | null>>;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
   logout: () => Promise.resolve(),
   isAuthenticated: false,
   setIsAuthenticated: () => {},
+  user: null,
+  setUser: () => {},
 });
 
 export const AuthProvider = ({ children }: FuncProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [user, setUser] = useState<Omit<user, 'password'> | null>(null);
 
   const validateToken = async (token: string) => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    // TODO: Convert this to useQuery
     try {
       // post /user/me to get fresh token
-      await axios.post('/user/me', { token });
+      const res = await userResolver.me(token);
+      setUser(res.user);
       setIsAuthenticated(true);
     } catch (error) {
       console.log(error);
@@ -56,6 +64,7 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
 
       // Set authenticated to false
       setIsAuthenticated(false);
+      setUser(null);
     } catch (error) {
       // Handle logout error here, show error message, etc.
       console.error('Logout failed:', error);
@@ -69,7 +78,7 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
 
   return (
     <AuthContext.Provider
-      value={{ setIsAuthenticated, logout, isAuthenticated }}
+      value={{ setIsAuthenticated, logout, isAuthenticated, user, setUser }}
     >
       {children}
     </AuthContext.Provider>

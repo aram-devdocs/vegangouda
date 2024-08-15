@@ -16,6 +16,7 @@ export const userResolver = {
   },
   async me(token: string): Promise<{
     token: string;
+    user: Omit<user, 'password'>;
   }> {
     const { data } = await axios.post(userPaths.me.path, { token });
     return data;

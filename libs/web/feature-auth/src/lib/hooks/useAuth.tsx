@@ -7,7 +7,7 @@ import { userPaths } from '@vegangouda/shared/types';
 import { useMutation, QueryClient } from '@tanstack/react-query';
 
 export const useAuth = () => {
-  const { setIsAuthenticated } = useAuthContext();
+  const { setIsAuthenticated, setUser } = useAuthContext();
   const { state } = useLocation();
   const navigate = useNavigate();
   const { showErrorToast, showSuccessToast } = useToast();
@@ -28,6 +28,7 @@ export const useAuth = () => {
       setIsAuthenticated(true);
       navigate(state?.from ? state.from : '/');
       showSuccessToast('Logged in successfully');
+      setUser(data.user);
       queryClient.invalidateQueries({
         queryKey: userPaths.getAllUsers.queryKey,
       });

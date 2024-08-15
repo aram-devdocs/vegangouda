@@ -13,6 +13,7 @@ const jwtSecret = process.env.JWT_SECRET;
 const saltKey = process.env.SALT_KEY;
 export const UserService = {
   async me(token: string): Promise<{
+    user: Omit<user, 'password'>;
     token: string;
   }> {
     // see if input.token has a valid jwt that is both valid and not expired, if so return a fresh token
@@ -34,7 +35,7 @@ export const UserService = {
       throw new Error('User not found');
     }
 
-    return { token };
+    return { user, token };
   },
 
   async create(input: Prisma.userCreateInput): Promise<user> {
