@@ -4,6 +4,15 @@ import { AuthToken } from '@vegangouda/shared/types';
 const prisma = new PrismaClient();
 
 export const User = {
+  async findAll(): Promise<Omit<user, 'password'>[]> {
+    const res = await prisma.user.findMany({
+      omit: {
+        password: true,
+      },
+    });
+
+    return res;
+  },
   async findByUserId(
     user_id: user['user_id']
   ): Promise<Omit<user, 'password'> | null> {
@@ -58,6 +67,14 @@ export const User = {
   async create(args: Prisma.userCreateArgs): Promise<user> {
     const { created_at, created_by } = track(null);
     const { data } = args;
+
+    // If no users exist, set the first user as ADMIN
+    const users = await prisma.user.findMany();
+
+    if (users.length === 0) {
+      data.role = 'ADMIN';
+    }
+
     const res = await prisma.user.create({
       data: {
         ...data,
@@ -98,6 +115,28 @@ export const User = {
       },
       data: {
         ...data,
+        updated_at,
+        updated_by,
+      },
+    });
+
+    return res;
+  },
+
+  async updateRole(
+    user_id: user['user_id'],
+    role: user['role'],
+    auth: AuthToken
+  ): Promise<Omit<user, 'password'>> {
+    const { updated_at, updated_by } = track(auth.user_id);
+
+    const res = await prisma.user.update({
+      where: { user_id },
+      omit: {
+        password: true,
+      },
+      data: {
+        role,
         updated_at,
         updated_by,
       },

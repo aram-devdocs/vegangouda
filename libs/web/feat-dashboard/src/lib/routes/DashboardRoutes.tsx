@@ -1,8 +1,8 @@
 import { Routes, Route } from 'react-router-dom';
-import { RegisterPage, LoginPage } from '../pages';
 import { LayoutContainer } from '@vegangouda/web/design-system';
+import { HomePage } from '../pages';
 
-export const AuthRoutes = () => {
+export const DashboardRoutes = () => {
   return (
     <LayoutContainer
       sx={{
@@ -14,8 +14,7 @@ export const AuthRoutes = () => {
       }}
     >
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/" element={<HomePage />} />
       </Routes>
     </LayoutContainer>
   );

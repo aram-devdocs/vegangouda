@@ -1,20 +1,23 @@
 import { Stack, TextField, Button, Card } from '@vegangouda/web/design-system';
-import { useRegister } from '../hooks/useRegister';
 import { Prisma } from '@prisma/client';
 
 import { useForm, Controller } from 'react-hook-form';
 
 export interface RegisterProps {
   onSubmit: (user: Prisma.userCreateInput) => void;
+  isPending: boolean;
 }
 
-export const Register = () => {
-  const { onCreateUser } = useRegister();
+export const Register = ({ onSubmit, isPending }: RegisterProps) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<Prisma.userCreateInput>();
+
+  const onCreateUser = (data: Prisma.userCreateInput) => {
+    onSubmit(data);
+  };
 
   return (
     <Card
@@ -95,6 +98,7 @@ export const Register = () => {
             onCreateUser(data);
           })}
           label="Register"
+          loading={isPending}
         />
       </Stack>
     </Card>

@@ -1,1 +1,3 @@
-export * from './EmailLogin';
+export * from './EmailLoginForm';
+
+export * from './Register';

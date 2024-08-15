@@ -100,6 +100,7 @@ export {
   useTheme,
   styled,
 } from '@mui/material';
+export * from './lib/core/datagrid';
 
 // context
 export * from './lib/context/AuthProvider';

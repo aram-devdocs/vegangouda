@@ -5,34 +5,34 @@ import { PageLoader } from '@vegangouda/web/shared-components';
 import { userResolver } from '@vegangouda/web/data-access';
 import { user } from '@prisma/client';
 interface AuthContextProps {
-  login: (
-    email: string,
-    password: string
-  ) => Promise<{
-    user: user;
-    token: string;
-  } | null>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  user: Omit<user, 'password'> | null;
+  setUser: React.Dispatch<React.SetStateAction<Omit<user, 'password'> | null>>;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
-  login: async () => {
-    return null;
-  },
   logout: () => Promise.resolve(),
   isAuthenticated: false,
+  setIsAuthenticated: () => {},
+  user: null,
+  setUser: () => {},
 });
 
 export const AuthProvider = ({ children }: FuncProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [user, setUser] = useState<Omit<user, 'password'> | null>(null);
 
   const validateToken = async (token: string) => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    // TODO: Convert this to useQuery
     try {
       // post /user/me to get fresh token
-      await axios.post('/user/me', { token });
+      const res = await userResolver.me(token);
+      setUser(res.user);
       setIsAuthenticated(true);
     } catch (error) {
       console.log(error);
@@ -57,29 +57,6 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
     }
   }, []);
 
-  const login = async (
-    email: string,
-    password: string
-  ): Promise<{
-    user: user;
-    token: string;
-  } | null> => {
-    const res = await userResolver
-      .loginWithEmail({ email, password })
-      .catch((error) => {
-        console.log(error);
-        setIsAuthenticated(false);
-        throw error;
-      });
-
-    if (res) {
-      localStorage.setItem('access_token', res.token);
-      setIsAuthenticated(true);
-    }
-
-    return res || null;
-  };
-
   const logout = async () => {
     try {
       // Remove the token from local storage
@@ -87,6 +64,7 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
 
       // Set authenticated to false
       setIsAuthenticated(false);
+      setUser(null);
     } catch (error) {
       // Handle logout error here, show error message, etc.
       console.error('Logout failed:', error);
@@ -99,7 +77,9 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
   }
 
   return (
-    <AuthContext.Provider value={{ login, logout, isAuthenticated }}>
+    <AuthContext.Provider
+      value={{ setIsAuthenticated, logout, isAuthenticated, user, setUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

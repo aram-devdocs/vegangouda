@@ -1,6 +1,7 @@
 import { RequireAuth } from '@vegangouda/web/design-system';
 import { Route, Routes } from 'react-router-dom';
 import { AuthRoutes } from '@vegangouda/web/feature-auth';
+import { DashboardRoutes } from '@vegangouda/web/feat-dashboard';
 // import { WebDesignSystem } from '@vegangouda/web/design-system';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,6 +14,15 @@ export function Router() {
 
         <Route
           path="/"
+          element={
+            <RequireAuth>
+              <DashboardRoutes />
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="*"
           element={
             <RequireAuth>
               <div>404 - No Page Found</div>
