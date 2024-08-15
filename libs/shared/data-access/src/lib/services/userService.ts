@@ -11,6 +11,9 @@ const prisma = new PrismaClient();
 import * as jwt from 'jsonwebtoken';
 const jwtSecret = process.env.JWT_SECRET;
 const saltKey = process.env.SALT_KEY;
+
+import { redisClient } from '../utils';
+
 export const UserService = {
   async me(token: string): Promise<{
     user: Omit<user, 'password'>;
