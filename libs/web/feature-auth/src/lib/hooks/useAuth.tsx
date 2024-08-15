@@ -4,19 +4,14 @@ import { useToast } from '@vegangouda/web/design-system';
 import { Prisma, user } from '@prisma/client';
 import { userResolver } from '@vegangouda/web/data-access';
 import { userPaths } from '@vegangouda/shared/types';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useMutation, QueryClient } from '@tanstack/react-query';
 
 export const useAuth = () => {
   const { setIsAuthenticated } = useAuthContext();
   const { state } = useLocation();
   const navigate = useNavigate();
   const { showErrorToast, showSuccessToast } = useToast();
-
-  const { data: allUsers, isLoading: allUsersLoading } = useQuery({
-    queryKey: userPaths.getAllUsers.queryKey,
-    queryFn: userResolver.getAllUsers,
-  });
+  const queryClient = new QueryClient();
 
   const useLogin = useMutation<
     { user: user; token: string },
@@ -33,6 +28,9 @@ export const useAuth = () => {
       setIsAuthenticated(true);
       navigate(state?.from ? state.from : '/');
       showSuccessToast('Logged in successfully');
+      queryClient.invalidateQueries({
+        queryKey: userPaths.getAllUsers.queryKey,
+      });
     },
   });
 
@@ -51,16 +49,15 @@ export const useAuth = () => {
         password: input.password,
       });
       navigate('/');
+
+      queryClient.invalidateQueries({
+        queryKey: userPaths.getAllUsers.queryKey,
+      });
     },
   });
 
-  // add additional hooks here
-  const queryLoading = useMemo(() => allUsersLoading, [allUsersLoading]);
-
   return {
     useLogin,
-    queryLoading,
-    allUsers,
     useCreateUser,
   };
 };

@@ -6,7 +6,7 @@ import {
   Box,
 } from '@vegangouda/web/design-system';
 import { useState } from 'react';
-import { EmailLogin } from '../components';
+import { EmailLoginForm } from '../components';
 
 export interface LoginProps {
   onSubmitEmail: (data: { email: string; password: string }) => void;
@@ -32,7 +32,7 @@ export const Login = ({ onSubmitEmail, isPending }: LoginProps) => {
       <Box sx={{ ...animationProps.smooth }}>
         <Typography>Login</Typography>
         {isEmailLogin ? (
-          <EmailLogin onSubmit={onSubmitEmail}  isPending={isPending}/>
+          <EmailLoginForm onSubmit={onSubmitEmail} isPending={isPending} />
         ) : (
           <Typography>Not Email Login</Typography>
         )}

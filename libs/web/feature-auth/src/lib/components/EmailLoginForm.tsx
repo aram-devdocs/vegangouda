@@ -13,12 +13,12 @@ interface EmailLoginProps {
   isPending: boolean;
 }
 
-export const EmailLogin = ({ onSubmit, isPending }: EmailLoginProps) => {
+export const EmailLoginForm = ({ onSubmit, isPending }: EmailLoginProps) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<Pick<Prisma.userCreateInput, 'email' | 'password'>>();
+  } = useForm<Pick<Prisma.userCreateInput, 'email' | 'password'>>({});
 
   return (
     <Card
