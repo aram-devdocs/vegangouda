@@ -9,6 +9,7 @@ export const User = {
       omit: {
         password: true,
       },
+      where: { archived: false },
     });
 
     return res;
@@ -20,10 +21,25 @@ export const User = {
       omit: {
         password: true,
       },
-      where: { user_id },
+      where: { user_id, archived: false },
     });
 
     return res ?? null;
+  },
+
+  async findUserIdByEmail(email: user['email']): Promise<user['user_id']> {
+    const res = await prisma.user.findUnique({
+      select: {
+        user_id: true,
+      },
+      where: { email, archived: false },
+    });
+
+    if (!res) {
+      throw new Error(`User with email: ${email} not found`);
+    }
+
+    return res.user_id;
   },
 
   async findByEmail(
@@ -33,7 +49,7 @@ export const User = {
       omit: {
         password: true,
       },
-      where: { email },
+      where: { email, archived: false },
     });
 
     return res ?? null;
@@ -46,7 +62,7 @@ export const User = {
       omit: {
         password: true,
       },
-      where: { mobile },
+      where: { mobile, archived: false },
     });
 
     return res ?? null;
@@ -54,7 +70,7 @@ export const User = {
 
   async findByEmailWithPassword(email: user['email']): Promise<user> {
     const res = await prisma.user.findUnique({
-      where: { email },
+      where: { email, archived: false },
     });
 
     if (!res) {
