@@ -1,13 +1,8 @@
 import { user } from '@prisma/client';
-import {
-  getCache,
-  setCache,
-  updateCacheExpiration,
-} from '../utils';
+import { getCache, setCache, updateCacheExpiration } from '../utils';
 
 const userCacheKeys = {
-  userById: (user_id: user['user_id']) => `user:id:${user_id}`,
-  userByEmail: (email: user['email']) => `user:email:${email}`,
+  userById: (user_id: user['user_id']) => `user:user_id:${user_id}`,
   allUsers: 'users:all',
 };
 
@@ -15,14 +10,6 @@ async function getCachedUserById(
   user_id: user['user_id']
 ): Promise<Omit<user, 'password'> | null> {
   const cacheKey = userCacheKeys.userById(user_id);
-  const cachedData = await getCache(cacheKey);
-  return cachedData ? cachedData : null;
-}
-
-async function getCachedUserByEmail(
-  email: user['email']
-): Promise<Omit<user, 'password'> | null> {
-  const cacheKey = userCacheKeys.userByEmail(email);
   const cachedData = await getCache(cacheKey);
   return cachedData ? cachedData : null;
 }
@@ -52,11 +39,6 @@ async function updateUserInAllUsers(
   }
 }
 
-async function setUserByEmail(user: Omit<user, 'password'>, background = true) {
-  const cacheKey = userCacheKeys.userByEmail(user.email);
-  setCache({ cacheKey, value: user, background });
-}
-
 async function setUserById(user: Omit<user, 'password'>, background = true) {
   const cacheKey = userCacheKeys.userById(user.user_id);
   setCache({ cacheKey, value: user, background });
@@ -67,19 +49,17 @@ async function setAllUsers(users: Omit<user, 'password'>[], background = true) {
   setCache({ cacheKey, value: users, background });
 }
 
-async function logoutUserByEmail(email: user['email']) {
-  const cacheKey = userCacheKeys.userByEmail(email);
+async function logoutUserById(user_id: user['user_id']) {
+  const cacheKey = userCacheKeys.userById(user_id);
   const TIME_TO_LIVE = 60 * 5; // 5 minutes
   updateCacheExpiration(cacheKey, TIME_TO_LIVE);
 }
 
 export const userCacheHandler = {
   getCachedUserById,
-  getCachedUserByEmail,
   getAllCachedUsers,
   updateUserInAllUsers,
-  setUserByEmail,
   setUserById,
   setAllUsers,
-  logoutUserByEmail,
+  logoutUserById,
 };

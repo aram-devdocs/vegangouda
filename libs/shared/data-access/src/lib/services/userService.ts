@@ -21,13 +21,13 @@ export const UserService = {
     if (!decoded) {
       throw new Error('Invalid token');
     }
-    const { email } = decoded as { email: string };
+    const { email, user_id } = decoded as AuthToken;
 
     if (!email) {
       throw new Error('Invalid token: Email not found');
     }
 
-    let user = await userCacheHandler.getCachedUserByEmail(email);
+    let user = await userCacheHandler.getCachedUserById(user_id);
 
     if (!user) {
       user = await User.findByEmail(email);
@@ -36,7 +36,7 @@ export const UserService = {
         throw new Error('User not found');
       }
 
-      userCacheHandler.setUserByEmail(user);
+      userCacheHandler.setUserById(user);
     }
 
     return { user, token };
@@ -133,7 +133,7 @@ export const UserService = {
 
     delete user.password;
 
-    userCacheHandler.setUserByEmail(user);
+    userCacheHandler.setUserById(user);
 
     return { token, user };
   },
@@ -157,7 +157,8 @@ export const UserService = {
   },
 
   async findByEmail({ email }: Pick<Prisma.userWhereUniqueInput, 'email'>) {
-    let user = await userCacheHandler.getCachedUserByEmail(email);
+    const user_id = await User.findUserIdByEmail(email);
+    let user = await userCacheHandler.getCachedUserById(user_id);
 
     if (!user) {
       user = await User.findByEmail(email);
@@ -166,7 +167,7 @@ export const UserService = {
         throw new Error('User not found');
       }
 
-      userCacheHandler.setUserByEmail(user);
+      userCacheHandler.setUserById(user);
     }
 
     return user;
@@ -211,7 +212,7 @@ export const UserService = {
     // TODO: Blacklist the token
 
     // delete the user from cache
-    userCacheHandler.logoutUserByEmail(auth.email).catch((error) => {
+    userCacheHandler.logoutUserById(auth.user_id).catch((error) => {
       console.error(error);
       return { message: 'Error logging out user from cache' };
     });
