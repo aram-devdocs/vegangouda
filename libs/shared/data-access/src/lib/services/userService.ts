@@ -29,10 +29,7 @@ export const UserService = {
 
     let user = await userCacheHandler.getCachedUserByEmail(email);
 
-    if (user) {
-      console.log('Data retrieved from Redis');
-    } else {
-      console.log('Data retrieved from Database');
+    if (!user) {
       user = await User.findByEmail(email);
 
       if (!user) {
@@ -146,10 +143,7 @@ export const UserService = {
   }: Pick<Prisma.userWhereUniqueInput, 'user_id'>) {
     let user = await userCacheHandler.getCachedUserById(user_id);
 
-    if (user) {
-      console.log('Data retrieved from Redis');
-    } else {
-      console.log('Data retrieved from Database');
+    if (!user) {
       user = await User.findByUserId(user_id);
 
       if (!user) {
@@ -165,10 +159,7 @@ export const UserService = {
   async findByEmail({ email }: Pick<Prisma.userWhereUniqueInput, 'email'>) {
     let user = await userCacheHandler.getCachedUserByEmail(email);
 
-    if (user) {
-      console.log('Data retrieved from Redis');
-    } else {
-      console.log('Data retrieved from Database');
+    if (!user) {
       user = await User.findByEmail(email);
 
       if (!user) {
@@ -195,10 +186,7 @@ export const UserService = {
   async getAllUsers(): Promise<Omit<user, 'password'>[]> {
     let users = await userCacheHandler.getAllCachedUsers();
 
-    if (users) {
-      console.log('Data retrieved from Redis');
-    } else {
-      console.log('Data retrieved from Database');
+    if (!users) {
       users = await User.findAll();
 
       userCacheHandler.setAllUsers(users);
