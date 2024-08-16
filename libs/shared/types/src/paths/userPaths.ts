@@ -1,6 +1,5 @@
 import { createPaths } from './types';
 
-
 const paths = {
   createUser: '/user/create',
   loginWithEmail: '/user/login-with-email',
@@ -11,6 +10,7 @@ const paths = {
   getUserByEmail: '/user/get-user-by-email',
   getAllUsers: '/user/get-all-users',
   updateUserRole: '/user/update-user-role',
+  logout: '/user/logout',
 } as const;
 
 export const userPaths = createPaths(paths);

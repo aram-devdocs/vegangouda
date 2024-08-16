@@ -6,6 +6,8 @@ export const DataGrid = ({
   rows,
   pageSizeOptions = [10, 25, 50],
   paginationModel = { pageSize: 10, page: 0 },
+  rowSelection = false,
+  checkboxSelection = false,
   ...props
 }: DataGridProps) => {
   const tableUUID = uuidv4();
@@ -18,6 +20,7 @@ export const DataGrid = ({
 
   return (
     <DG
+      {...props}
       rows={rowsWithId}
       pageSizeOptions={pageSizeOptions}
       initialState={{
@@ -25,7 +28,8 @@ export const DataGrid = ({
           paginationModel,
         },
       }}
-      {...props}
+      rowSelection={rowSelection}
+      checkboxSelection={checkboxSelection}
     />
   );
 };

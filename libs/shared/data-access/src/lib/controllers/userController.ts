@@ -153,6 +153,19 @@ async function updateUserRole(
   }
 }
 
+async function logout(request: FastifyRequestWithAuth, reply: FastifyReply) {
+  try {
+    const { token } = request.body as { token: string };
+    if (!token) {
+      throw new Error('No token provided');
+    }
+    const user = await UserService.logout(token, request.auth);
+    reply.send(user);
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
 export const UserController = {
   me,
   createUser,
@@ -163,4 +176,5 @@ export const UserController = {
   loginWithEmail,
   getAllUsers,
   updateUserRole,
+  logout,
 };

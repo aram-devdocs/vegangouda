@@ -10,7 +10,7 @@ export const HomePage = () => {
     return <PageLoader />;
   }
 
-  if (queryError || !allUsers) {
+  if (queryError) {
     return <div>{queryError && queryError.message}</div>;
   }
 
@@ -18,7 +18,7 @@ export const HomePage = () => {
     case 'ADMIN':
       return (
         <AdminDash
-          users={allUsers}
+          users={allUsers || []}
           updateUserRole={updateUserRole.mutate}
           isPending={updateUserRole.isPending}
           loggedInUserId={user.user_id}
