@@ -1,8 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuthContext } from '@vegangouda/web/design-system';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useToast } from '@vegangouda/web/design-system';
-import { Prisma, user } from '@prisma/client';
+import { useAuthContext, useToast } from '@vegangouda/web/design-system';
+import { user } from '@prisma/client';
 import { userResolver } from '@vegangouda/web/data-access';
 import { userPaths } from '@vegangouda/shared/types';
 import { useEffect, useMemo } from 'react';
@@ -10,6 +8,9 @@ import { useEffect, useMemo } from 'react';
 export const useDashboard = () => {
   const queryClient = useQueryClient();
   const { showErrorToast, showSuccessToast } = useToast();
+  const { user } = useAuthContext();
+
+  const isAdmin = useMemo(() => user?.role === 'ADMIN', [user]);
 
   const {
     data: allUsers,
@@ -18,6 +19,7 @@ export const useDashboard = () => {
   } = useQuery({
     queryKey: userPaths.getAllUsers.queryKey,
     queryFn: userResolver.getAllUsers,
+    enabled: isAdmin,
   });
 
   useEffect(() => {
@@ -40,9 +42,22 @@ export const useDashboard = () => {
     },
     onSuccess: (data) => {
       showSuccessToast('User role updated successfully');
-      queryClient.invalidateQueries({
-        queryKey: userPaths.getAllUsers.queryKey,
-      });
+
+      queryClient.setQueryData<Omit<user, 'password'>[]>(
+        userPaths.getAllUsers.queryKey,
+        (oldData) => {
+          if (oldData) {
+            const userIndex = oldData.findIndex(
+              (u) => u.user_id === data.user_id
+            );
+            if (userIndex !== -1) {
+              oldData[userIndex] = data;
+            }
+            return oldData;
+          }
+          return [];
+        }
+      );
     },
   });
 

@@ -31,9 +31,15 @@ export const useAuth = () => {
       navigate(state?.from ? state.from : '/');
       showSuccessToast('Logged in successfully');
       setUser(data.user);
-      queryClient.invalidateQueries({
-        queryKey: userPaths.getAllUsers.queryKey,
-      });
+      queryClient.setQueryData<user[]>(
+        userPaths.getAllUsers.queryKey,
+        (oldData) => {
+          if (oldData) {
+            return [...oldData, data.user];
+          }
+          return [data.user];
+        }
+      );
     },
   });
 
@@ -51,10 +57,15 @@ export const useAuth = () => {
         password: input.password,
       });
       navigate('/');
-
-      queryClient.invalidateQueries({
-        queryKey: userPaths.getAllUsers.queryKey,
-      });
+      queryClient.setQueryData<user[]>(
+        userPaths.getAllUsers.queryKey,
+        (oldData) => {
+          if (oldData) {
+            return [...oldData, data];
+          }
+          return [data];
+        }
+      );
     },
   });
 

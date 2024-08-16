@@ -218,4 +218,16 @@ export const UserService = {
 
     return user;
   },
+
+  async logout(token: string, auth: AuthToken): Promise<{ message: string }> {
+    // TODO: Blacklist the token
+
+    // delete the user from cache
+    userCacheHandler.logoutUserByEmail(auth.email).catch((error) => {
+      console.error(error);
+      return { message: 'Error logging out user from cache' };
+    });
+
+    return { message: 'Logged out' };
+  },
 };

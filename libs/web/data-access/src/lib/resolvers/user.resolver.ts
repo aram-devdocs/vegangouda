@@ -44,10 +44,13 @@ export const userResolver = {
 
   async updateUserRole(input: {
     user_id: user['user_id'];
-    role: 'ADMIN' | 'USER';
+    role: user['role'];
   }): Promise<Omit<user, 'password'>> {
-
     const { data } = await axios.post(userPaths.updateUserRole.path, input);
     return data;
+  },
+
+  async logout(token: string): Promise<void> {
+    await axios.post(userPaths.logout.path, { token });
   },
 };

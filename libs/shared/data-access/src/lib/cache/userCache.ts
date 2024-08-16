@@ -1,5 +1,9 @@
 import { user } from '@prisma/client';
-import { getCache, setCache } from '../utils';
+import {
+  getCache,
+  setCache,
+  updateCacheExpiration,
+} from '../utils';
 
 const userCacheKeys = {
   userById: (user_id: user['user_id']) => `user:id:${user_id}`,
@@ -63,6 +67,12 @@ async function setAllUsers(users: Omit<user, 'password'>[], background = true) {
   setCache({ cacheKey, value: users, background });
 }
 
+async function logoutUserByEmail(email: user['email']) {
+  const cacheKey = userCacheKeys.userByEmail(email);
+  const TIME_TO_LIVE = 60 * 5; // 5 minutes
+  updateCacheExpiration(cacheKey, TIME_TO_LIVE);
+}
+
 export const userCacheHandler = {
   getCachedUserById,
   getCachedUserByEmail,
@@ -71,4 +81,5 @@ export const userCacheHandler = {
   setUserByEmail,
   setUserById,
   setAllUsers,
+  logoutUserByEmail,
 };
