@@ -60,11 +60,13 @@ export const AuthProvider = ({ children }: FuncProviderProps) => {
   const logout = async () => {
     try {
       // Remove the token from local storage
+      const token = localStorage.getItem('access_token');
       localStorage.removeItem('access_token');
 
       // Set authenticated to false
       setIsAuthenticated(false);
       setUser(null);
+      userResolver.logout(token || '');
     } catch (error) {
       // Handle logout error here, show error message, etc.
       console.error('Logout failed:', error);

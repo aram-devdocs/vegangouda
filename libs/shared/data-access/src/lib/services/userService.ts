@@ -5,19 +5,17 @@ import {
 } from '@vegangouda/shared/utils-validation';
 import * as bcrypt from 'bcrypt';
 import { AuthToken } from '@vegangouda/shared/types';
-import { user, Prisma, PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
-
+import { user, Prisma } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
+import { userCacheHandler } from '../cache';
+
 const jwtSecret = process.env.JWT_SECRET;
 const saltKey = process.env.SALT_KEY;
-export const UserService = {
-  async me(token: string): Promise<{
-    user: Omit<user, 'password'>;
-    token: string;
-  }> {
-    // see if input.token has a valid jwt that is both valid and not expired, if so return a fresh token
 
+export const UserService = {
+  async me(
+    token: string
+  ): Promise<{ user: Omit<user, 'password'>; token: string }> {
     const decoded = jwt.verify(token, jwtSecret);
 
     if (!decoded) {
@@ -29,10 +27,16 @@ export const UserService = {
       throw new Error('Invalid token: Email not found');
     }
 
-    const user = await User.findByEmail(email);
+    let user = await userCacheHandler.getCachedUserByEmail(email);
 
     if (!user) {
-      throw new Error('User not found');
+      user = await User.findByEmail(email);
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      userCacheHandler.setUserByEmail(user);
     }
 
     return { user, token };
@@ -46,24 +50,20 @@ export const UserService = {
     }
 
     const doesEmailExistOnUser = await User.findByEmail(email);
-
     if (doesEmailExistOnUser) {
       throw new Error('Email already exists: ' + email);
     }
 
     const doesMobileExistOnUser = await User.findByMobile(mobile);
-
     if (doesMobileExistOnUser) {
       throw new Error('Mobile already exists');
     }
 
-    const emailError = !validateEmail(email);
-    if (emailError) {
+    if (!validateEmail(email)) {
       throw new Error('Invalid email');
     }
 
-    const passwordError = !validatePassword(password);
-    if (passwordError) {
+    if (!validatePassword(password)) {
       throw new Error('Invalid password');
     }
 
@@ -76,6 +76,9 @@ export const UserService = {
       },
     });
 
+    // Update the 'users:all' cache in the background
+    userCacheHandler.updateUserInAllUsers(user);
+
     return user;
   },
 
@@ -84,22 +87,17 @@ export const UserService = {
     input: Prisma.userUpdateInput,
     auth: AuthToken
   ): Promise<Omit<user, 'password'>> {
-    const { email, password } = input;
-
-    const emailError = !validateEmail(email as string);
-    if (emailError) {
+    if (input.email && !validateEmail(input.email as string)) {
       throw new Error('Invalid email');
     }
 
-    const passwordError = !validatePassword(password as string);
-    if (passwordError) {
+    if (input.password && !validatePassword(input.password as string)) {
       throw new Error('Invalid password');
     }
 
-    const hashedPassword = await bcrypt.hash(
-      password as string,
-      Number(saltKey)
-    );
+    const hashedPassword = input.password
+      ? await bcrypt.hash(input.password as string, Number(saltKey))
+      : undefined;
 
     const user = await User.updateByUserId(
       user_id,
@@ -110,61 +108,66 @@ export const UserService = {
       auth
     );
 
+    userCacheHandler.setUserById(user);
+    userCacheHandler.updateUserInAllUsers(user);
+
     return user;
   },
 
-  async loginWithEmail(input: Pick<user, 'email' | 'password'>): Promise<{
-    user: user;
-    token: string;
-  }> {
+  async loginWithEmail(
+    input: Pick<user, 'email' | 'password'>
+  ): Promise<{ user: user; token: string }> {
     const { email, password } = input;
 
-    const emailError = !validateEmail(email);
-
-    if (emailError) {
+    if (!validateEmail(email)) {
       throw new Error('Invalid email');
     }
 
-    // check password against db
-
     const user = await User.findByEmailWithPassword(email);
 
-    const validPassword = await bcrypt.compare(password, user.password);
-
-    if (!validPassword) {
+    if (!(await bcrypt.compare(password, user.password))) {
       throw new Error('Invalid password');
     }
 
-    const token = jwt.sign(
-      {
-        ...user,
-      },
-      jwtSecret,
-      {
-        expiresIn: '1d',
-      }
-    );
+    const token = jwt.sign({ ...user }, jwtSecret, { expiresIn: '1d' });
 
-    // remove password
     delete user.password;
+
+    userCacheHandler.setUserByEmail(user);
 
     return { token, user };
   },
 
-  // TODO: Set up mobile code relationship
-  //   async loginWithMobile(input: LoginWithMobileInput) {
-  //   },
-
   async findByUserId({
     user_id,
   }: Pick<Prisma.userWhereUniqueInput, 'user_id'>) {
-    const user = await User.findByUserId(user_id);
+    let user = await userCacheHandler.getCachedUserById(user_id);
+
+    if (!user) {
+      user = await User.findByUserId(user_id);
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      userCacheHandler.setUserById(user);
+    }
 
     return user;
   },
 
   async findByEmail({ email }: Pick<Prisma.userWhereUniqueInput, 'email'>) {
-    const user = await User.findByEmail(email);
+    let user = await userCacheHandler.getCachedUserByEmail(email);
+
+    if (!user) {
+      user = await User.findByEmail(email);
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      userCacheHandler.setUserByEmail(user);
+    }
 
     return user;
   },
@@ -175,11 +178,20 @@ export const UserService = {
   ): Promise<Omit<user, 'password'>> {
     const user = await User.archiveByUserId(user_id, auth);
 
+    userCacheHandler.updateUserInAllUsers(user);
+
     return user;
   },
 
   async getAllUsers(): Promise<Omit<user, 'password'>[]> {
-    const users = await User.findAll();
+    let users = await userCacheHandler.getAllCachedUsers();
+
+    if (!users) {
+      users = await User.findAll();
+
+      userCacheHandler.setAllUsers(users);
+    }
+
     return users;
   },
 
@@ -189,6 +201,21 @@ export const UserService = {
     auth: AuthToken
   ): Promise<Omit<user, 'password'>> {
     const user = await User.updateRole(user_id, role, auth);
+
+    userCacheHandler.updateUserInAllUsers(user);
+
     return user;
+  },
+
+  async logout(token: string, auth: AuthToken): Promise<{ message: string }> {
+    // TODO: Blacklist the token
+
+    // delete the user from cache
+    userCacheHandler.logoutUserByEmail(auth.email).catch((error) => {
+      console.error(error);
+      return { message: 'Error logging out user from cache' };
+    });
+
+    return { message: 'Logged out' };
   },
 };
