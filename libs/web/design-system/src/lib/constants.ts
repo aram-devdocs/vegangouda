@@ -71,7 +71,11 @@ export const animationProps = {
 
 export const api_port = process.env.API_PORT || 3000;
 
-export const baseURL = process.env.API_URL || `http://0.0.0.0:3000`; // TODO: change this to the actual api url
+export const baseURL =
+  process.env.REACT_APP_API_URL ||
+  process.env.NODE_ENV === 'production'
+    ? 'http://10.0.0.42:3000' // TODO: Get the correct URL from API_URL
+    : `http://localhost:${api_port}`;
 export const defaultTimeout = 1000;
 
 export interface FuncProviderProps {
