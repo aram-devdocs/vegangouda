@@ -1,32 +1,74 @@
 import { user } from '@prisma/client';
-import { redisClient } from '../utils';
+import { getCache, setCache } from '../utils';
 
-export const userCacheKeys = {
+const userCacheKeys = {
   userById: (user_id: user['user_id']) => `user:id:${user_id}`,
   userByEmail: (email: user['email']) => `user:email:${email}`,
   allUsers: 'users:all',
 };
 
-export const userCacheHandler = {
-  async updateUserInAllUsersCache(updatedUser: Omit<user, 'password'>) {
-    const cacheKey = userCacheKeys.allUsers;
-    let users: Omit<user, 'password'>[] | null = await redisClient
-      .get(cacheKey)
-      .then(JSON.parse);
+async function getCachedUserById(
+  user_id: user['user_id']
+): Promise<Omit<user, 'password'> | null> {
+  const cacheKey = userCacheKeys.userById(user_id);
+  const cachedData = await getCache(cacheKey);
+  return cachedData ? cachedData : null;
+}
 
-    if (users) {
-      // Update the user in the cached array
-      const userIndex = users.findIndex(
-        (u) => u.user_id === updatedUser.user_id
-      );
-      if (userIndex !== -1) {
-        users[userIndex] = updatedUser; // Update existing user
-      } else {
-        users.push(updatedUser); // Add new user if not found (for create operation)
-      }
+async function getCachedUserByEmail(
+  email: user['email']
+): Promise<Omit<user, 'password'> | null> {
+  const cacheKey = userCacheKeys.userByEmail(email);
+  const cachedData = await getCache(cacheKey);
+  return cachedData ? cachedData : null;
+}
 
-      // Save the updated list back to Redis
-      await redisClient.set(cacheKey, JSON.stringify(users), 'EX', 3600); // Update 'users:all' cache
+async function getAllCachedUsers(): Promise<Omit<user, 'password'>[] | null> {
+  const cacheKey = userCacheKeys.allUsers;
+  const cachedData = await getCache(cacheKey);
+  return cachedData ? cachedData : null;
+}
+
+async function updateUserInAllUsers(
+  updatedUser: Omit<user, 'password'>,
+  background = true
+) {
+  const cacheKey = userCacheKeys.allUsers;
+  const users = await getAllCachedUsers();
+
+  if (users) {
+    const userIndex = users.findIndex((u) => u.user_id === updatedUser.user_id);
+    if (userIndex !== -1) {
+      users[userIndex] = updatedUser; // Update existing user
+    } else {
+      users.push(updatedUser); // Add new user if not found (for create operation)
     }
-  },
+
+    setCache({ cacheKey, value: users, background });
+  }
+}
+
+async function setUserByEmail(user: Omit<user, 'password'>, background = true) {
+  const cacheKey = userCacheKeys.userByEmail(user.email);
+  setCache({ cacheKey, value: user, background });
+}
+
+async function setUserById(user: Omit<user, 'password'>, background = true) {
+  const cacheKey = userCacheKeys.userById(user.user_id);
+  setCache({ cacheKey, value: user, background });
+}
+
+async function setAllUsers(users: Omit<user, 'password'>[], background = true) {
+  const cacheKey = userCacheKeys.allUsers;
+  setCache({ cacheKey, value: users, background });
+}
+
+export const userCacheHandler = {
+  getCachedUserById,
+  getCachedUserByEmail,
+  getAllCachedUsers,
+  updateUserInAllUsers,
+  setUserByEmail,
+  setUserById,
+  setAllUsers,
 };

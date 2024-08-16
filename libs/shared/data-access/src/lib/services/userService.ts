@@ -5,10 +5,9 @@ import {
 } from '@vegangouda/shared/utils-validation';
 import * as bcrypt from 'bcrypt';
 import { AuthToken } from '@vegangouda/shared/types';
-import { user, Prisma, PrismaClient } from '@prisma/client';
+import { user, Prisma } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
-import { redisClient } from '../utils';
-import { userCacheHandler, userCacheKeys } from '../cache';
+import { userCacheHandler } from '../cache';
 
 const jwtSecret = process.env.JWT_SECRET;
 const saltKey = process.env.SALT_KEY;
@@ -28,11 +27,7 @@ export const UserService = {
       throw new Error('Invalid token: Email not found');
     }
 
-    const cacheKey = userCacheKeys.userByEmail(email);
-
-    let user: Omit<user, 'password'> | null = await redisClient
-      .get(cacheKey)
-      .then(JSON.parse);
+    let user = await userCacheHandler.getCachedUserByEmail(email);
 
     if (user) {
       console.log('Data retrieved from Redis');
@@ -44,7 +39,7 @@ export const UserService = {
         throw new Error('User not found');
       }
 
-      await redisClient.set(cacheKey, JSON.stringify(user), 'EX', 3600); // Cache for 1 hour
+      userCacheHandler.setUserByEmail(user);
     }
 
     return { user, token };
@@ -58,24 +53,20 @@ export const UserService = {
     }
 
     const doesEmailExistOnUser = await User.findByEmail(email);
-
     if (doesEmailExistOnUser) {
       throw new Error('Email already exists: ' + email);
     }
 
     const doesMobileExistOnUser = await User.findByMobile(mobile);
-
     if (doesMobileExistOnUser) {
       throw new Error('Mobile already exists');
     }
 
-    const emailError = !validateEmail(email);
-    if (emailError) {
+    if (!validateEmail(email)) {
       throw new Error('Invalid email');
     }
 
-    const passwordError = !validatePassword(password);
-    if (passwordError) {
+    if (!validatePassword(password)) {
       throw new Error('Invalid password');
     }
 
@@ -88,8 +79,8 @@ export const UserService = {
       },
     });
 
-    // Update the 'users:all' cache selectively
-    await userCacheHandler.updateUserInAllUsersCache(user);
+    // Update the 'users:all' cache in the background
+    userCacheHandler.updateUserInAllUsers(user);
 
     return user;
   },
@@ -99,20 +90,16 @@ export const UserService = {
     input: Prisma.userUpdateInput,
     auth: AuthToken
   ): Promise<Omit<user, 'password'>> {
-    const { email, password } = input;
-
-    const emailError = email && !validateEmail(email as string);
-    if (emailError) {
+    if (input.email && !validateEmail(input.email as string)) {
       throw new Error('Invalid email');
     }
 
-    const passwordError = password && !validatePassword(password as string);
-    if (passwordError) {
+    if (input.password && !validatePassword(input.password as string)) {
       throw new Error('Invalid password');
     }
 
-    const hashedPassword = password
-      ? await bcrypt.hash(password as string, Number(saltKey))
+    const hashedPassword = input.password
+      ? await bcrypt.hash(input.password as string, Number(saltKey))
       : undefined;
 
     const user = await User.updateByUserId(
@@ -124,14 +111,8 @@ export const UserService = {
       auth
     );
 
-    // Update the individual user cache and 'users:all' cache selectively
-    await redisClient.set(
-      `user:id:${user_id}`,
-      JSON.stringify(user),
-      'EX',
-      3600
-    ); // Update user cache
-    await userCacheHandler.updateUserInAllUsersCache(user);
+    userCacheHandler.setUserById(user);
+    userCacheHandler.updateUserInAllUsers(user);
 
     return user;
   },
@@ -141,39 +122,21 @@ export const UserService = {
   ): Promise<{ user: user; token: string }> {
     const { email, password } = input;
 
-    const emailError = !validateEmail(email);
-    if (emailError) {
+    if (!validateEmail(email)) {
       throw new Error('Invalid email');
     }
 
     const user = await User.findByEmailWithPassword(email);
 
-    const validPassword = await bcrypt.compare(password, user.password);
-
-    if (!validPassword) {
+    if (!(await bcrypt.compare(password, user.password))) {
       throw new Error('Invalid password');
     }
 
-    const token = jwt.sign(
-      {
-        ...user,
-      },
-      jwtSecret,
-      {
-        expiresIn: '1d',
-      }
-    );
+    const token = jwt.sign({ ...user }, jwtSecret, { expiresIn: '1d' });
 
-    // remove password
     delete user.password;
 
-    // Cache the user data after login
-    await redisClient.set(
-      `user:email:${email}`,
-      JSON.stringify(user),
-      'EX',
-      3600
-    ); // Cache for 1 hour
+    userCacheHandler.setUserByEmail(user);
 
     return { token, user };
   },
@@ -181,10 +144,7 @@ export const UserService = {
   async findByUserId({
     user_id,
   }: Pick<Prisma.userWhereUniqueInput, 'user_id'>) {
-    const cacheKey = userCacheKeys.userById(user_id);
-    let user: Omit<user, 'password'> | null = await redisClient
-      .get(cacheKey)
-      .then(JSON.parse);
+    let user = await userCacheHandler.getCachedUserById(user_id);
 
     if (user) {
       console.log('Data retrieved from Redis');
@@ -196,17 +156,14 @@ export const UserService = {
         throw new Error('User not found');
       }
 
-      await redisClient.set(cacheKey, JSON.stringify(user), 'EX', 3600); // Cache for 1 hour
+      userCacheHandler.setUserById(user);
     }
 
     return user;
   },
 
   async findByEmail({ email }: Pick<Prisma.userWhereUniqueInput, 'email'>) {
-    const cacheKey = userCacheKeys.userByEmail(email);
-    let user: Omit<user, 'password'> | null = await redisClient
-      .get(cacheKey)
-      .then(JSON.parse);
+    let user = await userCacheHandler.getCachedUserByEmail(email);
 
     if (user) {
       console.log('Data retrieved from Redis');
@@ -218,7 +175,7 @@ export const UserService = {
         throw new Error('User not found');
       }
 
-      await redisClient.set(cacheKey, JSON.stringify(user), 'EX', 3600); // Cache for 1 hour
+      userCacheHandler.setUserByEmail(user);
     }
 
     return user;
@@ -230,23 +187,13 @@ export const UserService = {
   ): Promise<Omit<user, 'password'>> {
     const user = await User.archiveByUserId(user_id, auth);
 
-    // Update the individual user cache and 'users:all' cache selectively
-    await redisClient.set(
-      `user:id:${user_id}`,
-      JSON.stringify(user),
-      'EX',
-      3600
-    ); // Update user cache
-    await userCacheHandler.updateUserInAllUsersCache(user);
+    userCacheHandler.updateUserInAllUsers(user);
 
     return user;
   },
 
   async getAllUsers(): Promise<Omit<user, 'password'>[]> {
-    const cacheKey = userCacheKeys.allUsers;
-    let users: Omit<user, 'password'>[] | null = await redisClient
-      .get(cacheKey)
-      .then(JSON.parse);
+    let users = await userCacheHandler.getAllCachedUsers();
 
     if (users) {
       console.log('Data retrieved from Redis');
@@ -254,7 +201,7 @@ export const UserService = {
       console.log('Data retrieved from Database');
       users = await User.findAll();
 
-      await redisClient.set(cacheKey, JSON.stringify(users), 'EX', 3600); // Cache for 1 hour
+      userCacheHandler.setAllUsers(users);
     }
 
     return users;
@@ -267,14 +214,7 @@ export const UserService = {
   ): Promise<Omit<user, 'password'>> {
     const user = await User.updateRole(user_id, role, auth);
 
-    // Update the individual user cache and 'users:all' cache selectively
-    await redisClient.set(
-      `user:id:${user_id}`,
-      JSON.stringify(user),
-      'EX',
-      3600
-    ); // Update user cache
-    await userCacheHandler.updateUserInAllUsersCache(user);
+    userCacheHandler.updateUserInAllUsers(user);
 
     return user;
   },
