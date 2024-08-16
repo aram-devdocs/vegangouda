@@ -74,7 +74,7 @@ export const api_port = process.env.API_PORT || 3000;
 export const baseURL =
   process.env.REACT_APP_API_URL ||
   process.env.NODE_ENV === 'production'
-    ? 'http://10.0.0.42:3000' // TODO: Get the correct URL from API_URL
+    ? 'http://10.0.0.40:3000' // TODO: Get the correct URL from API_URL
     : `http://localhost:${api_port}`;
 export const defaultTimeout = 1000;
 
