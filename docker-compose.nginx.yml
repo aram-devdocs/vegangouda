@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - nginx-config:/etc/nginx/conf.d
+      - ./nginx/certs:/etc/nginx/certs
+    ports:
+      - "80:80"
+      - "443:443"
+
+volumes:
+  nginx-config:
+    driver: local
