@@ -152,6 +152,18 @@ Instead of manually managing your Docker Swarm setup via the command line, we re
 npm run start:portainer
 ```
 
+- Note: If you are unable to access externally, create new ingress network
+```bash
+docker network create \
+    --driver overlay \
+    --ingress \
+    --subnet 172.16.0.0/16 \
+    --gateway 172.16.0.1 \
+    ingress
+```
+
+Ref:https://stackoverflow.com/questions/59007780/container-running-on-docker-swarm-not-accessible-from-outside
+
 2. **Access the Portainer UI:**
 
    Once deployed, you can access the Portainer UI by navigating to `http://<manager-node-ip>:9000` in your web browser. Set up your admin user and password.
