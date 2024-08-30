@@ -8,4 +8,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../../coverage/libs/shared/data-access',
+  setupFilesAfterEnv: ['./src/lib/__tests__/mock/prisma.mock.ts'],
 };
