@@ -542,6 +542,90 @@ nx generate @nrwl/angular:app <app-name>
 
 This will create a new app in the `apps` directory.
 
+# Nginx Configuration
+
+This project sets up a Docker Swarm environment with Nginx as a reverse proxy, handling SSL termination for local development. The provided scripts assist in managing SSL certificates and updating configuration.
+
+## Setup
+
+### 1. Initial Setup
+
+Before using the provided scripts, you need to set up Nginx and the Docker Compose configuration.
+
+1. **Create Nginx Configuration and Certificates**
+
+   Run the `setup-nginx.sh` script to create Nginx configuration and generate self-signed SSL certificates.
+
+   ```bash
+   ./setup-nginx.sh
+   ```
+
+2. **Update the Local Hosts File**
+
+   Update your local `hosts` file to map the domain to your Docker Swarm manager's IP address.
+
+   ```bash
+   ./update-hosts.sh
+   ```
+
+3. **Deploy Docker Compose for Nginx**
+
+   Deploy the `docker-compose.nginx.yml` file using Portainer or manually:
+
+   ```bash
+   docker-compose -f docker-compose.nginx.yml up -d
+   ```
+
+## Certificate Management
+
+### Renewing Certificates
+
+To renew the self-signed SSL certificates and update the Nginx configuration, use the `renew-certificate.sh` script:
+
+1. **Run the Renewal Script**
+
+   Execute the following command to generate new certificates and update the Docker volume:
+
+   ```bash
+   ./renew-certificate.sh
+   ```
+
+2. **Restart Nginx Container**
+
+   After renewing the certificates, restart the Nginx container to apply the changes. You can do this through Portainer or using the Docker command:
+
+   ```bash
+   docker restart <nginx-container-name>
+   ```
+
+## Scripts
+
+### `setup-nginx.sh`
+
+Sets up the Nginx configuration and generates self-signed SSL certificates. The script does the following:
+
+- Creates the necessary directories.
+- Generates self-signed SSL certificates.
+- Creates a Docker volume with the Nginx configuration.
+
+### `update-hosts.sh`
+
+Updates the local `hosts` file to map `veganguda.local` to the Docker Swarm manager's IP address. This allows you to access your services via the custom domain locally.
+
+### `renew-certificate.sh`
+
+Renews the self-signed SSL certificates and updates the Docker volume with the new certificates. This script:
+
+- Generates new certificates.
+- Updates the Docker volume with the new certificates.
+- Notifies you to restart the Nginx container.
+
+## Notes
+
+- **Local Development Only:** This setup uses self-signed certificates suitable for local development. For production environments, use certificates from a trusted Certificate Authority.
+- **Portainer Integration:** If using Portainer, deploy the `docker-compose.nginx.yml` file from the Portainer UI for easier management.
+- **File Permissions:** Ensure all scripts have executable permissions. Use `chmod +x script_name.sh` to set permissions.
+
 ## Available Scripts
 
 - `npm start`: Runs the `serve` target for the `web` and `api` projects in parallel with hot-reloading enabled.
